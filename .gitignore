@@ -13,3 +13,6 @@ server/.cache/
 .vscode/
 .idea/
 .DS_Store
+
+# Databases
+*.db3
