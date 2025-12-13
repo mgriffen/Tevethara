@@ -1,0 +1,15 @@
+__pycache__/
+*.pyc
+*.pyo
+
+# Evennia runtime (don't version these)
+server/logs/
+server/db/
+server/.cache/
+*.sqlite3
+*.db
+
+# Editor/OS
+.vscode/
+.idea/
+.DS_Store
