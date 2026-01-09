@@ -17,6 +17,6 @@ class CmdMoon(Command):
     def func(self):
         self.msg("|wThe moons above Tevethara|n")
         self.msg("  |rElarion|n (red moon): [placeholder phase/position]")
-        self.msg("  |bSilthëa|n (blue moon): [placeholder phase/position]")
+        self.msg("  |cSilthëa|n (blue moon): [placeholder phase/position]")
         self.msg("")
         self.msg("Tip: Later we'll tie this to your 1hr=1day clock + calendar system.")

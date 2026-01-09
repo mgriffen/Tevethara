@@ -1,0 +1,116 @@
+{% extends "webclient/base.html" %}
+{% load static %}
+
+{% block client %}
+
+<!-- Custom Tevethara UI Layout -->
+<div id="tevethara-container">
+
+  <!-- Top Header Bar -->
+  <div id="header-bar">
+    <div class="header-left">
+      <span id="room-name" class="room-name">The Wandering Path</span>
+      <span id="exits-display" class="exits">[ Exits: N S E W ]</span>
+    </div>
+    <div class="header-right">
+      <span id="weather-display" class="weather">
+        <span class="weather-icon">☀️</span>
+        <span class="weather-label">Clear</span>
+      </span>
+      <span id="temp-display" class="temperature">72°F</span>
+      <span id="time-display" class="game-time">Midday</span>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <div id="main-container">
+    <!-- Main Text Scroll (Game Output) -->
+    <div id="main" class="split split-vertical" data-role-default>
+      <div id="main-sub" class="split-sub">
+        <div id="messagewindow"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Status Bar -->
+  <div id="status-bar">
+    <div class="status-left">
+      <!-- Health/Vitals -->
+      <div class="vital-group">
+        <span class="vital-label">HP:</span>
+        <div class="vital-bar">
+          <div id="hp-bar-fill" class="bar-fill hp-fill" style="width: 85%"></div>
+          <span id="hp-text" class="bar-text">85/100</span>
+        </div>
+      </div>
+      <div class="vital-group">
+        <span class="vital-label">ST:</span>
+        <div class="vital-bar">
+          <div id="st-bar-fill" class="bar-fill st-fill" style="width: 60%"></div>
+          <span id="st-text" class="bar-text">60/100</span>
+        </div>
+      </div>
+      <div class="vital-group">
+        <span class="vital-label">MP:</span>
+        <div class="vital-bar">
+          <div id="mp-bar-fill" class="bar-fill mp-fill" style="width: 100%"></div>
+          <span id="mp-text" class="bar-text">50/50</span>
+        </div>
+      </div>
+
+      <!-- XP Progress -->
+      <div class="xp-group">
+        <span class="xp-label">XP:</span>
+        <div class="xp-bar">
+          <div id="xp-bar-fill" class="bar-fill xp-fill" style="width: 45%"></div>
+          <span id="xp-text" class="bar-text">450/1000</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-center">
+      <!-- Needs -->
+      <span id="hunger-display" class="need-indicator">🍖 Satisfied</span>
+      <span id="thirst-display" class="need-indicator">💧 Hydrated</span>
+
+      <!-- Conditions -->
+      <span id="conditions-display" class="conditions">
+        <!-- Conditions will appear here like [Wet] [Poisoned] etc -->
+      </span>
+    </div>
+
+    <div class="status-right">
+      <!-- Mob/Threat Indicator -->
+      <span id="mob-indicator" class="mob-indicator">
+        <span class="mob-icon">⚔️</span>
+        <span id="mob-count" class="mob-count">0</span>
+      </span>
+
+      <!-- UI Mode Toggle -->
+      <button id="ui-mode-toggle" class="ui-toggle" title="Toggle Compact/Dashboard mode">
+        📊
+      </button>
+    </div>
+  </div>
+
+  <!-- Input Pane -->
+  <div id="input" class="split split-vertical" data-role-input data-update-append>
+    <div id="inputform" class="wrapper">
+      <div id="prompt" class="prompt"></div>
+      <div id="inputcontrol" class="input-group">
+        <textarea id="inputfield" type="text" class="form-control"></textarea>
+        <span class="input-group-btn">
+          <button class="btn btn-large btn-outline-primary" id="inputsend" type="button" value="">&gt;</button>
+        </span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<!-- Load custom Tevethara JavaScript -->
+<script src="{% static 'webclient/js/tevethara_ui.js' %}"></script>
+{% endblock %}

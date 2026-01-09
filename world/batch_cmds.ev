@@ -1,26 +1,95 @@
 #
-# A batch-command file is a way to build a game world
-# in a programmatic way, by placing a sequence of
-# build commands after one another. This allows for
-# using a real text editor to edit e.g. descriptions
-# rather than entering text on the command line.
-#
-# A batch-command file is loaded with @batchprocess in-game:
-#
-#   @batchprocess[/interactive] tutorial_examples.batch_cmds
-#
-# A # as the first symbol on a line begins a comment and
-# marks the end of a previous command definition. This is important,
-# - every command must be separated by at least one line of comment.
-#
-# All supplied commands are given as normal, on their own line
-# and accept arguments in any format up until the first next
-# comment line begins. Extra whitespace is removed; an empty
-# line in a command definition translates into a newline.
-#
-# See `evennia/contrib/tutorial_examples/batch_cmds.ev` for
-# an example of a batch-command code. See also the batch-code
-# system for loading python-code this way.
+# Tevethara Training Village - New Dawn
+# Batch command file to create the starter area
+# Load with: @batchprocess world.batch_cmds
 #
 
+#
+# 1. Training Grounds (Center/Hub)
+#
+@dig/teleport Training Grounds
 
+#
+@desc Training Grounds =
+A wide clearing of packed earth spreads before you, worn smooth by countless footfalls and training exercises. Wooden practice dummies stand in neat rows along the southern edge, their surfaces scarred from years of blade work. To the east, you can hear the rhythmic *thunk* of arrows finding their targets. The village square lies to the north, and a small instructor's lodge sits to the west.
+
+The twin moons of Tevethara—Silthëa's pale blue light and Elarion's faint red glow—cast long shadows across the grounds. A banner bearing the symbol of New Dawn Village flutters from a tall wooden post.
+
+#
+# 2. Village Square (North)
+#
+@dig Village Square = north;n, south;s
+
+#
+@desc Village Square =
+The heart of New Dawn Village opens before you, a cobblestone square surrounded by modest timber buildings. A stone well sits at the center, its bucket dangling from a worn rope. Villagers move about their daily tasks, some carrying bundles of firewood, others chatting near the well.
+
+To the south, you can see the Training Grounds where new adventurers hone their skills. The scent of bread wafts from a nearby bakery, mixing with the earthy smell of the surrounding farmland. Above, both moons are visible in the sky—Silthëa bright and steady, Elarion a ruddy companion.
+
+#
+# 3. Archery Range (East)
+#
+@tel Training Grounds
+
+#
+@dig Archery Range = east;e, west;w
+
+#
+@desc Archery Range =
+A long, narrow field stretches eastward, dotted with straw targets at varying distances. Wooden stands hold bows and quivers of practice arrows, their fletching dyed in the colors of New Dawn—blue and white. The packed dirt shows the marks of countless stance corrections, and a faded line marks the shooting position.
+
+Several targets bear fresh arrow holes, evidence of recent practice. Beyond the range, you can see the edge of Aldwood Forest, its trees dark and mysterious in the distance. To the west, the main Training Grounds await.
+
+#
+# 4. Sparring Circle (South)
+#
+@tel Training Grounds
+
+#
+@dig Sparring Circle = south;s, north;n
+
+#
+@desc Sparring Circle =
+A circular area outlined by white painted stones, scuffed and scattered from vigorous training bouts. Weapon racks line the perimeter, holding wooden practice swords, padded staves, and blunted spears. The ground inside the circle is churned earth, soft enough to cushion falls but firm enough for solid footing.
+
+An old wooden bench sits to one side, its surface carved with the initials of past trainees. The clang of practice weapons echoes occasionally from the circle. Above, Elarion's red moon seems to watch like a critical instructor's eye. The Training Grounds lie to the north.
+
+#
+# 5. Instructor's Lodge (West)
+#
+@tel Training Grounds
+
+#
+@dig Instructor's Lodge = west;w, east;e
+
+#
+@desc Instructor's Lodge =
+A sturdy log building with a thatched roof, this lodge serves as both armory and office for New Dawn's combat instructors. Weapon racks line the walls, holding real blades and armor—far superior to the practice gear outside. A large oak table dominates the center, covered with maps of Alda, training schedules, and scattered correspondence.
+
+A fireplace crackles in the corner, keeping the room warm and comfortable. The scent of weapon oil and leather fills the air. Through the eastern doorway, you can see the Training Grounds. A notice board on the wall lists training exercises and upcoming militia drills.
+
+#
+# Return to Training Grounds as default
+#
+@tel Training Grounds
+
+#
+# Set all rooms to the Room typeclass (ensures consistency)
+#
+@typeclass Training Grounds = typeclasses.rooms.Room
+
+#
+@typeclass Village Square = typeclasses.rooms.Room
+
+#
+@typeclass Archery Range = typeclasses.rooms.Room
+
+#
+@typeclass Sparring Circle = typeclasses.rooms.Room
+
+#
+@typeclass Instructor's Lodge = typeclasses.rooms.Room
+
+#
+# Done! Players will start in Training Grounds
+#
