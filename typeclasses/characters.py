@@ -23,4 +23,11 @@ class Character(ObjectParent, DefaultCharacter):
 
     """
 
-    pass
+    def at_object_creation(self):
+        """Called once when the character is first created."""
+        super().at_object_creation()
+        # OASMC Intake tracking
+        self.db.race = None
+        self.db.char_class = None
+        self.db.intake_step = 0   # tracks progress through onboarding
+        self.db.intake_complete = False

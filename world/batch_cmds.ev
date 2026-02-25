@@ -1,95 +1,584 @@
 #
-# Tevethara Training Village - New Dawn
-# Batch command file to create the starter area
+# OASMC Starting Area — Anuvara Office of Applied Sorcery and Maritime Compliance
+# Batch command file to build the full OASMC starting complex (~20 rooms).
+#
 # Load with: @batchprocess world.batch_cmds
 #
+# This script REPLACES the old New Dawn Village.
+# The script will teleport you around as it builds — this is expected.
+#
 
 #
-# 1. Training Grounds (Center/Hub)
+# ------------------------------------------------------------------
+# CLEANUP: Remove old New Dawn Village rooms if they exist
+# ------------------------------------------------------------------
 #
-@dig/teleport Training Grounds
+
+@tel Limbo
 
 #
-@desc Training Grounds =
-A wide clearing of packed earth spreads before you, worn smooth by countless footfalls and training exercises. Wooden practice dummies stand in neat rows along the southern edge, their surfaces scarred from years of blade work. To the east, you can hear the rhythmic *thunk* of arrows finding their targets. The village square lies to the north, and a small instructor's lodge sits to the west.
-
-The twin moons of Tevethara—Silthëa's pale blue light and Elarion's faint red glow—cast long shadows across the grounds. A banner bearing the symbol of New Dawn Village flutters from a tall wooden post.
+@py from evennia import search_object; [obj.delete() for obj in search_object("Training Grounds", typeclass="typeclasses.rooms.Room") + search_object("Village Square", typeclass="typeclasses.rooms.Room") + search_object("Archery Range", typeclass="typeclasses.rooms.Room") + search_object("Sparring Circle", typeclass="typeclasses.rooms.Room") + search_object("Instructor's Lodge", typeclass="typeclasses.rooms.Room") if obj]
 
 #
-# 2. Village Square (North)
+# ------------------------------------------------------------------
+# COMPLIANCE SIDE (SW — public arrival face)
+# ------------------------------------------------------------------
 #
-@dig Village Square = north;n, south;s
 
 #
-@desc Village Square =
-The heart of New Dawn Village opens before you, a cobblestone square surrounded by modest timber buildings. A stone well sits at the center, its bucket dangling from a worn rope. Villagers move about their daily tasks, some carrying bundles of firewood, others chatting near the well.
-
-To the south, you can see the Training Grounds where new adventurers hone their skills. The scent of bread wafts from a nearby bakery, mixing with the earthy smell of the surrounding farmland. Above, both moons are visible in the sky—Silthëa bright and steady, Elarion a ruddy companion.
-
+# 1. Arrival Pier (spawn room)
 #
-# 3. Archery Range (East)
-#
-@tel Training Grounds
+@dig/teleport Arrival Pier
 
 #
-@dig Archery Range = east;e, west;w
+
+@desc Arrival Pier =
+The dock smells of brine, tar, and bureaucracy. A long stone pier juts into the sheltered bay, its surface worn smooth by a thousand disembarkations. Ropes as thick as your arm strain at iron cleats. Somewhere above you, a horn sounds — the third time in ten minutes.
+
+Gulls wheel overhead, unbothered by the controlled chaos below. Porters shout. Crates swing from cranes. A Dock Warden in a grey-and-amber tabard blocks the landward gate with the stance of someone who has stopped a lot of people from going where they shouldn't.
+
+A painted sign above the gate reads: |y"NEW INTAKE — FOLLOW THE MARKED STONES."|n
+
+|xTo the south, the marked stones lead into the Pierside Queue.|x
 
 #
-@desc Archery Range =
-A long, narrow field stretches eastward, dotted with straw targets at varying distances. Wooden stands hold bows and quivers of practice arrows, their fletching dyed in the colors of New Dawn—blue and white. The packed dirt shows the marks of countless stance corrections, and a faded line marks the shooting position.
-
-Several targets bear fresh arrow holes, evidence of recent practice. Beyond the range, you can see the edge of Aldwood Forest, its trees dark and mysterious in the distance. To the west, the main Training Grounds await.
+@set Arrival Pier/db.intake_step = 0
 
 #
-# 4. Sparring Circle (South)
+# 2. Pierside Queue
 #
-@tel Training Grounds
+@dig Pierside Queue = south;s, north;n
 
 #
-@dig Sparring Circle = south;s, north;n
+@tel Pierside Queue
 
 #
-@desc Sparring Circle =
-A circular area outlined by white painted stones, scuffed and scattered from vigorous training bouts. Weapon racks line the perimeter, holding wooden practice swords, padded staves, and blunted spears. The ground inside the circle is churned earth, soft enough to cushion falls but firm enough for solid footing.
+@desc Pierside Queue =
+A roped-off queue winds between wooden posts painted in alternating grey and amber. The floor beneath your feet has been marked with flat stones — you were told to follow them, and here you are, following them.
 
-An old wooden bench sits to one side, its surface carved with the initials of past trainees. The clang of practice weapons echoes occasionally from the circle. Above, Elarion's red moon seems to watch like a critical instructor's eye. The Training Grounds lie to the north.
+Posted ordinances line the walls on boards so weathered they're practically part of the stone. Someone has been adding to them for centuries.
 
-#
-# 5. Instructor's Lodge (West)
-#
-@tel Training Grounds
+  |y"NO SUMMONING IN NAVIGABLE WATERS — §14, Maritime Compliance Act"|n
+  |y"FALSE MANIFESTS ARE A FELONY — minimum 3 years in the Understructure"|n
+  |y"UNREGISTERED INDIVIDUALS WILL BE TREATED AS CARGO"|n
+  |y"NEW INTAKE REPORT TO REGISTRY — this means you"|n
 
-#
-@dig Instructor's Lodge = west;w, east;e
-
-#
-@desc Instructor's Lodge =
-A sturdy log building with a thatched roof, this lodge serves as both armory and office for New Dawn's combat instructors. Weapon racks line the walls, holding real blades and armor—far superior to the practice gear outside. A large oak table dominates the center, covered with maps of Alda, training schedules, and scattered correspondence.
-
-A fireplace crackles in the corner, keeping the room warm and comfortable. The scent of weapon oil and leather fills the air. Through the eastern doorway, you can see the Training Grounds. A notice board on the wall lists training exercises and upcoming militia drills.
+|xTo the south, Manifest Hall awaits.|n
 
 #
-# Return to Training Grounds as default
-#
-@tel Training Grounds
+@set Pierside Queue/db.intake_step = 0
 
 #
-# Set all rooms to the Room typeclass (ensures consistency)
+# 3. Manifest Hall
 #
-@typeclass Training Grounds = typeclasses.rooms.Room
+@dig Manifest Hall = south;s, north;n
 
 #
-@typeclass Village Square = typeclasses.rooms.Room
+@tel Manifest Hall
 
 #
-@typeclass Archery Range = typeclasses.rooms.Room
+@desc Manifest Hall =
+High ceilings, long counters, and the smell of ink that has soaked into the stonework over several generations. Intake clerks perch behind their stations with the focused disinterest of professionals who have processed more people than they care to count.
+
+A large painted motto runs above the counter in official Compliance script:
+
+  |y"APPLIED SORCERY IS NOT MAGIC. IT IS PAPERWORK WITH CONSEQUENCES."|n
+
+One of the clerks — a compact woman with ink-stained fingers and absolutely no expression — catches your eye and jerks her thumb at the nearest open station. On the counter before her is a legal ledger large enough to fall asleep reading.
+
+Type |wbegin intake|n to begin the registration process.
 
 #
-@typeclass Sparring Circle = typeclasses.rooms.Room
+@set Manifest Hall/db.intake_step = 1
 
 #
-@typeclass Instructor's Lodge = typeclasses.rooms.Room
+# 4. Intake Counter (side of Manifest Hall)
+#
+@dig Intake Counter = west;w, east;e
 
 #
-# Done! Players will start in Training Grounds
+@tel Intake Counter
+
+#
+@desc Intake Counter =
+A sub-station for overflow intake, staffed by a junior clerk who looks like this was not what he studied for. Stacks of pending manifests threaten to topple from every surface.
+
+A sign reads: |y"PLEASE RETURN TO THE MAIN COUNTER. THIS STATION IS FOR FREIGHT MANIFESTS ONLY."|n
+
+#
+@set Intake Counter/db.intake_step = 0
+
+#
+@tel Manifest Hall
+
+#
+# 5. Inspection Yard
+#
+@dig Inspection Yard = east;e, west;w
+
+#
+@tel Inspection Yard
+
+#
+@desc Inspection Yard =
+A stone courtyard open to the sky, used for the inspection of larger cargo and flagged passengers. Crates are stacked in neat rows, each bearing an amber Compliance seal. A cluster of inspectors in leather aprons work over an open chest with warded lanterns — the lanterns flicker green when held near falsified manifests.
+
+This area is not currently processing new intake. A posted sign redirects you: |y"NEW INTAKE: PROCEED TO MANIFEST HALL — WEST."|n
+
+|xThe Compliance side offices lie to the south.|n
+
+#
+@set Inspection Yard/db.intake_step = 0
+
+#
+# 6. Fee & Berth Office
+#
+@dig Fee and Berth Office = south;s, north;n
+
+#
+@tel Fee and Berth Office
+
+#
+@desc Fee and Berth Office =
+The room where commerce and bureaucracy achieve their perfect, airless union. A long counter is staffed by two clerks who deal exclusively with docking fees, anchoring permits, pilot assignments, and slip allocation. A chalkboard behind them is covered in abbreviations you don't understand.
+
+They look up as you enter. Then look back at their ledgers. If your business is fees, you're in the right place. If your business is anything else, you are not.
+
+|xThis office is for registered vessels only. New intake does not conduct business here.|n
+
+#
+@set Fee and Berth Office/db.intake_step = 0
+
+#
+@tel Inspection Yard
+
+#
+# 7. Harbor Notices Board
+#
+@dig Harbor Notices Board = east;e, west;w
+
+#
+@tel Harbor Notices Board
+
+#
+@desc Harbor Notices Board =
+A large public board in an alcove just off the inspection yard, its surface thick with layered notices, some of them dating back decades if the fading is any indication. Most are official Compliance edicts, advisories, and embargo updates. A small section at the bottom is reserved for crew postings, lost property, and what appears to be a twenty-year-old argument about a missing goat.
+
+Nothing here requires action from new intake. The Registry lies back the way you came.
+
+#
+@set Harbor Notices Board/db.intake_step = 0
+
+#
+@tel Manifest Hall
+
+#
+# ------------------------------------------------------------------
+# SHARED SPINE — character creation rooms
+# ------------------------------------------------------------------
+#
+
+#
+# 8. Name Registry
+#
+@dig Name Registry = south;s, north;n
+
+#
+@tel Name Registry
+
+#
+@desc Name Registry =
+A small chamber off the main hall, quieter than anywhere you've been since you arrived. The walls are lined floor-to-ceiling with leather-bound ledgers — decades of names, in precise script, each sealed with a small amber thumbprint of compliance warding.
+
+The clerk here is older, with the deliberate movements of someone who has never made a clerical error and will not start today. Before them: a fresh ledger, an open page, and a waiting quill.
+
+  |y"NAMES MUST BE BETWEEN 2 AND 24 CHARACTERS."|n
+  |y"APOSTROPHES AND HYPHENS ARE ACCEPTABLE. NUMBERS ARE NOT A NAME."|n
+  |y"ONCE SEALED, YOUR NAME IS YOUR NAME. CHOOSE ACCORDINGLY."|n
+
+Type |wset name <your name>|n to register.
+
+#
+@set Name Registry/db.intake_step = 2
+
+#
+# 9. Identity Gallery
+#
+@dig Identity Gallery = south;s, north;n
+
+#
+@tel Identity Gallery
+
+#
+@desc Identity Gallery =
+A long gallery, well-lit by amber-glassed sconces. The walls on both sides are hung with banners, plaques, and carved panels — each representing a lineage documented in the OASMC's registry over its long history.
+
+|yHuman|n   — Adaptable and numerous, found across all four continents.
+|yElf|n      — Long-lived and attuned to nature's rhythms.
+|yHalf-Elf|n — Born between worlds, welcome in most — belonging in none.
+|yDwarf|n    — Stout, resilient, unmatched in craft and stubbornness.
+|yHalfling|n — Small in stature, sharp in wit, and suspiciously lucky.
+
+Each plaque pulses faintly with an amber ward when you approach.
+
+Type |wlineages|n to view detailed descriptions, or |wchoose <lineage>|n to select yours.
+
+#
+@set Identity Gallery/db.intake_step = 3
+
+#
+# 10. Aptitude Annex
+#
+@dig Aptitude Annex = south;s, north;n
+
+#
+@tel Aptitude Annex
+
+#
+@desc Aptitude Annex =
+This is where Maritime Compliance and the Academy achieve their most visible entanglement: a room that looks like a Registry office but functions like a hiring hall — except what's being hired is the rest of your career.
+
+Tablets of polished grey stone are mounted along each wall, one per discipline. Each bears the name of a class, a short description etched beneath it, and an amber seal that responds to a pressed palm.
+
+Type |wlineages|n — wait, wrong room. Type |wdisciplines|n to view all options, or |wchoose <discipline>|n to select yours.
+
+#
+@set Aptitude Annex/db.intake_step = 4
+
+#
+# 11. Oath & Stamp Station
+#
+@dig Oath and Stamp Station = south;s, north;n
+
+#
+@tel Oath and Stamp Station
+
+#
+@desc Oath and Stamp Station =
+The room is smaller than expected for something that marks the end of a process people have been walking toward for twenty minutes. A single wide counter. A die-press bolted to its surface. A registrar — compact, ink-stained, unhurried — who looks up as you enter and does not appear surprised.
+
+On the counter before her sits a disc of pale grey stone, waiting.
+
+Behind her, a framed motto:
+  |y"THE STAMP IS THE CONTRACT. THE CONTRACT IS THE PERSON. WE DO NOT UNDO PERSONS."|n
+
+Once you are ready, type |wconfirm|n to finalize your intake and receive your Academy token.
+If you have reconsidered anything, type |wreconsider race|n, |wreconsider class|n, or |wreconsider name|n.
+
+#
+@set Oath and Stamp Station/db.intake_step = 5
+
+#
+# ------------------------------------------------------------------
+# NEUTRAL CORRIDOR — the gated passage between Compliance and Academy
+# ------------------------------------------------------------------
+#
+
+#
+# 12. Neutral Corridor (Compliance End)
+#
+@dig Neutral Corridor Checkpoint = north;n, south;s
+
+#
+@tel Neutral Corridor Checkpoint
+
+#
+@desc Neutral Corridor Checkpoint =
+The passage between the Compliance side and the Academy is marked by a low archway reinforced with iron banding and posted with enough ordinances to paper a small room. A Compliance Guard stands at the gate — grey-amber tabard, hand resting on the gate lever, expression suggesting they have heard every excuse.
+
+  |y"PASSAGE REQUIRES A VALID ACADEMY INTAKE TOKEN."|n
+  |y"TOKENS ARE ISSUED AT THE OATH AND STAMP STATION."|n
+  |y"DO NOT PRESENT FORGERIES. WE WILL KNOW."|n
+
+The gate is made of iron bars. The gap between them is smaller than it looks.
+
+Proceed |wnorth|n through the checkpoint to the Neutral Corridor — if you have your token.
+
+#
+@set Neutral Corridor Checkpoint/db.intake_step = 0
+
+#
+# 13. Neutral Corridor Midpoint
+#
+@open north;n = Neutral Corridor
+
+#
+@dig Neutral Corridor = north;n, south;s
+
+#
+@tel Neutral Corridor
+
+#
+@desc Neutral Corridor =
+A wide stone passage, wider than a corridor strictly needs to be — the original architects clearly anticipated both volume and tension. The walls bear two complete sets of rules: Compliance ordinances on the left, Academy charter provisions on the right. Where they contradict each other, which happens in at least three places, whoever posted them simply left both.
+
+Midway down the corridor, an inlaid line of darker stone marks the jurisdictional boundary. On one side: maritime law. On the other: academy charter. The guards at each end are from different offices and maintain a professional relationship through the shared medium of not looking at each other.
+
+The Academy end is to the |wnorth|n.
+
+#
+@set Neutral Corridor/db.intake_step = 0
+
+#
+# ------------------------------------------------------------------
+# ACADEMY SIDE (NE — campus)
+# ------------------------------------------------------------------
+#
+
+#
+# 14. Student Gate Arch
+#
+@dig Student Gate Arch = north;n, south;s
+
+#
+@tel Student Gate Arch
+
+#
+@desc Student Gate Arch =
+The stone here is different — older, darker, worn by a different kind of traffic. The arch above you is carved with the Academy motto, less imperious than Compliance's, more aspirational:
+
+  |y"ENTER UNCERTAIN. LEAVE CAPABLE. RETURN WHEN NEEDED."|n
+
+On the Academy side of the arch, the atmosphere shifts immediately. Quieter. Cooler. The echoes change character. Beyond the arch, a courtyard opens up — green in the center, stone-bordered, ringed by low buildings with lit windows.
+
+An Academy Runner — young, uniformed, and waiting — approaches.
+
+  |yRunner:|n "Welcome. You're through. That's the hard part."
+  |yRunner:|n "Your first task: find your instructor and deliver your token. The |wSanction Hall|n is east — it will tell you where to go."
+
+Type |wlook|n to take in your surroundings. The Quad is to the |wnorth|n.
+
+#
+@set Student Gate Arch/db.intake_step = 0
+
+#
+# 15. First Courtyard / Quad
+#
+@dig First Courtyard = north;n, south;s
+
+#
+@tel First Courtyard
+
+#
+@desc First Courtyard =
+The central quad of the Academy side: a wide stone courtyard with a circle of old-growth grass at its heart, ringed by low benches worn smooth by generations of students. The buildings around it are low, practical, built to last — which they have. Several students cross the quad with the purposeful stride of people who are not late but aren't early either.
+
+A noticeboard near the east path reads: |y"SANCTION HALL — CLASS ASSIGNMENTS, INSTRUCTOR LOCATIONS, ACTIVE SANCTIONS"|n.
+
+Exits lead to the |wSanction Hall|n to the east, the |wRefectory|n to the west, and the |wDormitory Gallery|n to the north. The Academy Gate is back to the |wsouth|n.
+
+#
+@set First Courtyard/db.intake_step = 0
+
+#
+# 16. Sanction Hall
+#
+@dig Sanction Hall = east;e, west;w
+
+#
+@tel Sanction Hall
+
+#
+@desc Sanction Hall =
+A tall-ceilinged hall lined with assignment boards, class rosters, active sanctions, and a dense web of interconnected notices that only make complete sense if you've been here a while. At the near end, a large desk is staffed by a Hall Keeper who manages the flow of information with practiced efficiency.
+
+Your instructor location is posted here by discipline:
+
+  |yFighter|n     → |wDrill Yard|n (north courtyard)
+  |yRogue|n       → |wPractical Skills Hall|n (basement, east wing)
+  |yRanger|n      → |wArchery Line|n (east yard gate)
+  |yWizard|n      → |wArcane Lecture Hall|n (tower, north wing)
+  |ySorcerer|n    → |wArcane Lecture Hall|n (tower, north wing)
+  |yWarlock|n     → |wArcane Lecture Hall|n (tower, north wing)
+  |yCleric|n      → |wOath Chapel|n (south wing)
+  |yPaladin|n     → |wOath Chapel|n (south wing)
+  |yBard|n        → |wResonance Studio|n (west wing)
+  |yDruid|n       → |wGreen Court Conservatory|n (inner garden)
+
+Find your instructor and present your |wAcademy Intake Token|n to begin training.
+
+#
+@set Sanction Hall/db.intake_step = 0
+
+#
+@tel First Courtyard
+
+#
+# 17. Refectory Entrance
+#
+@dig Refectory Entrance = west;w, east;e
+
+#
+@tel Refectory Entrance
+
+#
+@desc Refectory Entrance =
+The smell reaches you before you reach it: bread, something savory, and the communal warmth of a room that has been feeding people for a very long time. The refectory proper is through the wide archway ahead — long tables, mismatched chairs, a fireplace at one end large enough to stable a pony in.
+
+Several students eat in groups, talking in the overlapping shorthand of people mid-assignment. No one much notices a new face.
+
+This space is available to you. The kitchen counter runs along the far wall.
+
+#
+@set Refectory Entrance/db.intake_step = 0
+
+#
+@tel First Courtyard
+
+#
+# 18. Dormitory Gallery
+#
+@dig Dormitory Gallery = north;n, south;s
+
+#
+@tel Dormitory Gallery
+
+#
+@desc Dormitory Gallery =
+A long corridor lined with doors — numbered, plain, each with a small board slot for a name card. The corridor stretches further than expected. The Academy houses a lot of students at any given time, and has for a long time.
+
+The boards beside most doors already have names in them. One near the end of the corridor is blank.
+
+#
+@set Dormitory Gallery/db.intake_step = 0
+
+#
+# 19. Dorm Common Room
+#
+@dig Dorm Common Room = east;e, west;w
+
+#
+@tel Dorm Common Room
+
+#
+@desc Dorm Common Room =
+A comfortable shared space at the end of the dormitory corridor: low chairs, a small hearth, a bookcase of Academy-issued texts and a secondary bookcase of texts that are decidedly not Academy-issued. A worn board game has been left mid-game on the side table.
+
+Two students look up as you enter, then return to their conversation.
+
+#
+@set Dorm Common Room/db.intake_step = 0
+
+#
+@tel First Courtyard
+
+#
+# ------------------------------------------------------------------
+# LOCKED / TEASED AREAS (sealed exits off main path)
+# ------------------------------------------------------------------
+#
+
+#
+# 20. Understructure Stair (sealed)
+#
+@dig Understructure Stair = down;d, up;u
+
+#
+@tel Understructure Stair
+
+#
+@desc Understructure Stair =
+A heavy iron door at the base level of the complex, braced with two heavy crossbars and three wax seals that have been re-applied over older seals. A posted notice reads:
+
+  |y"UNDERSTRUCTURE: SEALED BY ORDER OF COMPLIANCE — ACTIVE STRUCTURAL REVIEW"|n
+
+The review, by the look of the seals, has been ongoing for approximately thirty years.
+
+Whatever is down there, it is not currently accessible. The stair leading back up is the only way available.
+
+#
+@set Understructure Stair/db.intake_step = 0
+
+#
+@tel Sanction Hall
+
+#
+# 21. Faculty Tower Stair (restricted)
+#
+@dig Faculty Tower Stair = up;u, down;d
+
+#
+@tel Faculty Tower Stair
+
+#
+@desc Faculty Tower Stair =
+A spiral stair that winds upward beyond what the building's exterior suggested was possible. A gate bars the way at the first landing, locked, with a Ward seal — the kind that logs who touches it.
+
+A small sign reads: |y"FACULTY AND AUTHORIZED PERSONNEL ONLY. INTAKE STUDENTS DO NOT HAVE AUTHORIZATION. THIS APPLIES TO YOU SPECIFICALLY."|n
+
+#
+@set Faculty Tower Stair/db.intake_step = 0
+
+#
+@tel Neutral Corridor Checkpoint
+
+#
+# 22. Beacon/Wards Door (guarded)
+#
+@dig Beacon Engine Vault = west;w, east;e
+
+#
+@tel Beacon Engine Vault
+
+#
+@desc Beacon Engine Vault =
+You were not supposed to find this. Or rather — the door was here, visible, just off the main corridor, and nobody explicitly told you not to look through the small iron grate set into it.
+
+Through the grate you can see: a large, low-lit chamber. At its center, something that hums. The hum is not musical, but it is consistent, and has presumably been consistent for quite some time.
+
+A Compliance Guard stands before the door, not looking at you, apparently absorbing the wall with great focus.
+
+  |yGuard:|n "Move along."
+
+#
+@set Beacon Engine Vault/db.intake_step = 0
+
+#
+# ------------------------------------------------------------------
+# Set typeclasses
+# ------------------------------------------------------------------
+#
+
+@tel Limbo
+
+#
+@py
+from evennia import search_object
+regular_rooms = [
+    "Arrival Pier", "Pierside Queue", "Manifest Hall", "Intake Counter",
+    "Inspection Yard", "Fee and Berth Office", "Harbor Notices Board",
+    "Name Registry", "Identity Gallery", "Aptitude Annex",
+    "Oath and Stamp Station", "Neutral Corridor", "Student Gate Arch",
+    "First Courtyard", "Sanction Hall", "Refectory Entrance",
+    "Dormitory Gallery", "Dorm Common Room",
+    "Understructure Stair", "Faculty Tower Stair", "Beacon Engine Vault",
+]
+for name in regular_rooms:
+    objs = search_object(name, typeclass="typeclasses.rooms.Room")
+    if not objs:
+        objs = search_object(name)
+    for obj in objs:
+        obj.swap_typeclass("typeclasses.rooms.Room")
+
+#
+# Set the token-gated exit on Neutral Corridor Checkpoint → Neutral Corridor
+#
+@py
+from evennia import search_object
+checkpoints = search_object("Neutral Corridor Checkpoint")
+if checkpoints:
+    room = checkpoints[0]
+    for ex in room.exits:
+        if ex.key.lower() in ("north", "n"):
+            ex.swap_typeclass("typeclasses.exits.TokenGatedExit")
+            caller.msg(f"TokenGatedExit set on: {ex.key} (from {room.key})")
+
+#
+# ------------------------------------------------------------------
+# Done!
+# ------------------------------------------------------------------
+#
+
+@tel Arrival Pier
+
 #

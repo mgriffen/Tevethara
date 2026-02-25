@@ -263,7 +263,6 @@
         commandHistory: [],
         historyIndex: -1,
         maxHistory: 50,
-        keepInputAfterSend: false, // Set to true to keep text in input after Enter
 
         init: function() {
             console.log("Tevethara Input initializing...");
@@ -339,14 +338,6 @@
                     const command = inputField.value.trim();
                     if (command) {
                         this.addToHistory(command);
-                    }
-
-                    // If keepInputAfterSend is true, prevent clearing
-                    if (this.keepInputAfterSend) {
-                        // We'll select all text so next keystroke replaces it
-                        setTimeout(() => {
-                            inputField.select();
-                        }, 50);
                     }
                 }
             }, true); // Use capture phase to run before other handlers

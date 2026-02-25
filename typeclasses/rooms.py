@@ -21,4 +21,9 @@ class Room(ObjectParent, DefaultRoom):
     properties and methods available on all Objects.
     """
 
-    pass
+    def get_display_name(self, looker=None, **kwargs):
+        """
+        Displays the name of the room, wrapped in brackets.
+        """
+        name = super().get_display_name(looker, **kwargs)
+        return f"[{name}]"
