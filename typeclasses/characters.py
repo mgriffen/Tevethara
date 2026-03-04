@@ -13,6 +13,126 @@ from evennia.objects.objects import DefaultCharacter
 from .objects import ObjectParent
 
 
+# ---------------------------------------------------------------------------
+# Intro cutscene beat texts — broken into short lines for typewriter reveal
+# ---------------------------------------------------------------------------
+
+_BEAT_0 = (
+    "\n\n"
+    "|xThe island has been growing for an hour.|n\n"
+    "\n"
+    "You can see it clearly now from the stern rail —\n"
+    "low grey cliffs,\n"
+    "a smear of buildings above the waterline,\n"
+    "the OASMC complex asserting itself against the sky\n"
+    "with the confidence of something built by committee\n"
+    "and paid for by someone else.\n"
+    "\n"
+    "The ferry |wrocks|n.\n"
+    "Salt air. Tar.\n"
+    "The creak of a hull that has made this crossing\n"
+    "more times than anyone has bothered to count.\n"
+    "\n"
+    "You meant to stay awake for the approach.\n"
+    "\n"
+    "|xYour eyes grow heavy.|n"
+)
+
+_BEAT_1 = (
+    "\n"
+    "|xThe sky is wrong.|n\n"
+    "\n"
+    "Not dark — |mdark|n.\n"
+    "The difference is felt before it is understood.\n"
+    "\n"
+    "Across the horizon: a streak of fire.\n"
+    "Not lightning. Not a signal flare.\n"
+    "Something |wlarger|n,\n"
+    "moving with the patient certainty of things\n"
+    "that do not know they should stop."
+)
+
+_BEAT_2 = (
+    "\n"
+    "|rThe horizon fills.|n\n"
+    "\n"
+    "Sound arrives a moment after the light —\n"
+    "the kind that is not heard so much as |rfelt|n,\n"
+    "deep in the chest, behind the teeth.\n"
+    "\n"
+    "Stone and water, |rscreaming|n.\n"
+    "\n"
+    "The world |rsplits|n."
+)
+
+_BEAT_3 = (
+    "\n"
+    "|xSilence.|n\n"
+    "\n"
+    "Then: deep underground —\n"
+    "far enough that the concept of 'down'\n"
+    "has become abstract —\n"
+    "something |mpulses|n.\n"
+    "\n"
+    "|mPink|n. |mPurple|n.\n"
+    "The color has no name in the language you use for colors.\n"
+    "\n"
+    "It beats like a second heart.\n"
+    "Slower than yours. Older.\n"
+    "\n"
+    "|xIt does not know what it is.|n\n"
+    "|xIt only knows that it |mis|n|x.|n"
+)
+
+_BEAT_4 = (
+    "\n"
+    "It knows you are here.\n"
+    "\n"
+    "Not a thought. Not a signal.\n"
+    "A |mrecognition|n —\n"
+    "the way a lodestone turns,\n"
+    "the way still water knows\n"
+    "the shape of what disturbs it.\n"
+    "\n"
+    "Something reaches.\n"
+    "\n"
+    "|mNot toward you specifically.|n\n"
+    "\n"
+    "|xJust — toward.|n"
+)
+
+_BEAT_5 = (
+    "\n"
+    "|wYou wake.|n\n"
+    "\n"
+    "Hull-thump.\n"
+    "The particular sound of a ferry meeting a pier\n"
+    "at a speed that someone in an office\n"
+    "has decided is acceptable.\n"
+    "\n"
+    "Salt air. The shriek of gulls.\n"
+    "\n"
+    "Around you, the other passengers are already on their feet —\n"
+    "gathering bags, moving for the gangplank\n"
+    "with the coordinated shuffle of people\n"
+    "who have been sitting for two hours\n"
+    "and are not going to be last off the boat.\n"
+    "\n"
+    "|xAnuvara Bay. The OASMC island.|n\n"
+    "|xYou have arrived.|n"
+)
+
+# Pairs of (beat_text, pause_after_in_seconds)
+_BEATS = [
+    (_BEAT_0, 12),
+    (_BEAT_1, 14),
+    (_BEAT_2, 10),
+    (_BEAT_3, 14),
+    (_BEAT_4, 12),
+    (_BEAT_5, 6),
+]
+
+
 class Character(ObjectParent, DefaultCharacter):
     """
     The Character just re-implements some of the Object's methods and hooks
@@ -40,93 +160,56 @@ class Character(ObjectParent, DefaultCharacter):
         else:
             super().at_post_puppet(**kwargs)
 
-    def _run_intro_cutscene(self):
+    # ------------------------------------------------------------------
+    # Intro cutscene
+    # ------------------------------------------------------------------
+
+    def _typewrite(self, text, char_speed=0.030, done_callback=None):
+        """
+        Display text one line at a time. Delay per line scales with line
+        length at ~30ms/character to approximate a typewriter feel.
+        If the character disconnects mid-scene, stops silently.
+        """
         from evennia.utils.utils import delay
+
+        lines = text.split('\n')
+
+        def _send(idx):
+            if not self.sessions.all():
+                return
+            if idx >= len(lines):
+                if done_callback:
+                    done_callback()
+                return
+            self.msg(lines[idx])
+            content = lines[idx].strip()
+            speed = 0.25 if not content else max(0.20, len(content) * char_speed)
+            delay(speed, _send, idx + 1)
+
+        _send(0)
+
+    def _run_intro_cutscene(self):
         from evennia.utils.search import search_object
+        from evennia.utils.utils import delay
+
         ferry = search_object("Ferry Passenger Hold")
         if ferry:
             self.move_to(ferry[0], quiet=True, move_type="teleport")
-        self._intro_beat_0()
-        delay(4,  self._intro_beat_1)
-        delay(10, self._intro_beat_2)
-        delay(17, self._intro_beat_3)
-        delay(23, self._intro_beat_4)
-        delay(28, self._intro_beat_5)
-        delay(32, self._intro_beat_6)
 
-    def _intro_beat_0(self):
-        self.msg(
-            "\n\n"
-            "|xThe island has been growing for an hour.|n\n\n"
-            "You can see it clearly now from the stern rail — low grey cliffs, "
-            "a smear of buildings above the waterline, the OASMC complex asserting "
-            "itself against the sky with the confidence of something built by committee "
-            "and paid for by someone else.\n\n"
-            "The ferry |wrocks|n. Salt air. Tar. The creak of a hull that has made "
-            "this crossing more times than anyone has bothered to count.\n\n"
-            "You meant to stay awake for the approach.\n\n"
-            "|xYour eyes grow heavy.|n"
-        )
+        def play(idx):
+            if not self.sessions.all():
+                return
+            if idx >= len(_BEATS):
+                self._intro_finish()
+                return
+            text, pause = _BEATS[idx]
+            def after_text():
+                delay(pause, play, idx + 1)
+            self._typewrite(text, done_callback=after_text)
 
-    def _intro_beat_1(self):
-        self.msg(
-            "\n"
-            "|xThe sky is wrong.|n\n\n"
-            "Not dark — |mdark|n. The difference is felt before it is understood.\n\n"
-            "Across the horizon: a streak of fire. Not lightning. Not a signal flare. "
-            "Something |wlarger|n, moving with the patient certainty of things "
-            "that do not know they should stop."
-        )
+        play(0)
 
-    def _intro_beat_2(self):
-        self.msg(
-            "\n"
-            "|rThe horizon fills.|n\n\n"
-            "Sound arrives a moment after the light — the kind that is not heard "
-            "so much as |rfelt|n, deep in the chest, behind the teeth.\n\n"
-            "Stone and water, |rscreaming|n.\n\n"
-            "The world |rsplits|n."
-        )
-
-    def _intro_beat_3(self):
-        self.msg(
-            "\n"
-            "|xSilence.|n\n\n"
-            "Then: deep underground — far enough that the concept of 'down' "
-            "has become abstract — something |mpulses|n.\n\n"
-            "|mPink|n. |mPurple|n. The color has no name in the language "
-            "you use for colors.\n\n"
-            "It beats like a second heart. Slower than yours. Older.\n\n"
-            "|xIt does not know what it is. It only knows that it |mis|n|x.|n"
-        )
-
-    def _intro_beat_4(self):
-        self.msg(
-            "\n"
-            "It knows you are here.\n\n"
-            "Not a thought. Not a signal. A |mrecognition|n — "
-            "the way a lodestone turns, the way still water knows "
-            "the shape of what disturbs it.\n\n"
-            "Something reaches.\n\n"
-            "|mNot toward you specifically.|n\n\n"
-            "|xJust — toward.|n"
-        )
-
-    def _intro_beat_5(self):
-        self.msg(
-            "\n"
-            "|wYou wake.|n\n\n"
-            "Hull-thump. The particular sound of a ferry meeting a pier "
-            "at a speed that someone in an office has decided is acceptable.\n\n"
-            "Salt air. The shriek of gulls.\n\n"
-            "Around you, the other passengers are already on their feet — "
-            "gathering bags, moving for the gangplank with the coordinated "
-            "shuffle of people who have been sitting for two hours and "
-            "are not going to be last off the boat.\n\n"
-            "|xAnuvara Bay. The OASMC island. You have arrived.|n"
-        )
-
-    def _intro_beat_6(self):
+    def _intro_finish(self):
         self.db.intro_seen = True
         if self.location:
             self.msg(
