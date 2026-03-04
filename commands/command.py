@@ -20,17 +20,10 @@ class Command(BaseCommand):
 
     """
 
-    # Each Command class implements the following methods, called in this order
-    # (only func() is actually required):
-    #
-    #     - at_pre_cmd(): If this returns anything truthy, execution is aborted.
-    #     - parse(): Should perform any extra parsing needed on self.args
-    #         and store the result on self.
-    #     - func(): Performs the actual work.
-    #     - at_post_cmd(): Extra actions, often things done after
-    #         every command, like prompts.
-    #
-    pass
+    def at_post_cmd(self):
+        """Send the ASCII prompt after every command."""
+        if hasattr(self.caller, "update_prompt"):
+            self.caller.update_prompt()
 
 
 # -------------------------------------------------------------

@@ -154,11 +154,46 @@ class Character(ObjectParent, DefaultCharacter):
         # Intro cutscene tracking
         self.db.intro_seen = False
 
+    def get_prompt(self):
+        """Return the ASCII text prompt string showing current vitals."""
+        hp     = self.db.hp or 100
+        hp_max = self.db.hp_max or 100
+        st     = self.db.stamina or 100
+        st_max = self.db.stamina_max or 100
+        mp     = self.db.mp or 50
+        mp_max = self.db.mp_max or 50
+        return (
+            f"|x<|n"
+            f"|rHP:{hp}/{hp_max}|n  "
+            f"|yST:{st}/{st_max}|n  "
+            f"|cMP:{mp}/{mp_max}|n"
+            f"|x>|n"
+        )
+
+    def update_prompt(self):
+        """Push the current prompt to the client."""
+        self.msg(prompt=self.get_prompt())
+
+    def send_map(self):
+        """Render and push the current area map to the client via OOB."""
+        if not self.location:
+            return
+        from world.map_render import render_area_map
+        map_str = render_area_map(self.location)
+        self.msg(oob=[("tev_map", [], {"data": map_str})])
+
+    def at_after_move(self, source_location, move_type="move", **kwargs):
+        """Send updated map whenever the character moves."""
+        super().at_after_move(source_location, move_type=move_type, **kwargs)
+        self.send_map()
+
     def at_post_puppet(self, **kwargs):
         if not self.db.intro_seen:
             self._run_intro_cutscene()
         else:
             super().at_post_puppet(**kwargs)
+        self.update_prompt()
+        self.send_map()
 
     # ------------------------------------------------------------------
     # Intro cutscene
@@ -211,6 +246,7 @@ class Character(ObjectParent, DefaultCharacter):
 
     def _intro_finish(self):
         self.db.intro_seen = True
+        self.send_map()
         if self.location:
             self.msg(
                 (self.at_look(self.location), {"type": "look"}), options=None

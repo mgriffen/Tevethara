@@ -1,0 +1,192 @@
+#
+# Tevethara Map Coordinate Setup
+# Tags all existing rooms with (map_area, map_x, map_y).
+#
+# Load with:  @batchprocess world.map_setup
+#
+# Coordinate convention:
+#   east  = +x,  west  = -x
+#   north = +y,  south = -y
+#
+# Areas:
+#   "ferry"  — the crossing vessel (2 rooms)
+#   "oasmc"  — the full island: compliance dock + neutral corridor + academy
+#
+
+# -----------------------------------------------------------------------
+# FERRY AREA
+# -----------------------------------------------------------------------
+
+#
+@tel Ferry Passenger Hold
+
+#
+@py self.location.db.map_area = "ferry"; self.location.db.map_x = 0; self.location.db.map_y = 0; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Ferry Upper Deck
+
+#
+@py self.location.db.map_area = "ferry"; self.location.db.map_x = 0; self.location.db.map_y = 1; self.msg("Tagged: " + self.location.key)
+
+# -----------------------------------------------------------------------
+# OASMC AREA — compliance dock (y 7-10)
+# -----------------------------------------------------------------------
+
+#
+@tel Arrival Pier
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 0; self.location.db.map_y = 10; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Pierside Queue
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 0; self.location.db.map_y = 9; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Manifest Hall
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 0; self.location.db.map_y = 8; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Intake Counter
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = -1; self.location.db.map_y = 8; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Inspection Yard
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 1; self.location.db.map_y = 8; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Harbor Notices Board
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 2; self.location.db.map_y = 8; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Fee and Berth Office
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 1; self.location.db.map_y = 7; self.msg("Tagged: " + self.location.key)
+
+# -----------------------------------------------------------------------
+# OASMC AREA — character creation spine (y 3-6)
+# -----------------------------------------------------------------------
+
+#
+@tel Name Registry
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 0; self.location.db.map_y = 6; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Identity Gallery
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 0; self.location.db.map_y = 5; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Aptitude Annex
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 0; self.location.db.map_y = 4; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Oath and Stamp Station
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 0; self.location.db.map_y = 3; self.msg("Tagged: " + self.location.key)
+
+# -----------------------------------------------------------------------
+# OASMC AREA — neutral corridor (y 0-2)
+# -----------------------------------------------------------------------
+
+#
+@tel Neutral Corridor Checkpoint
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 0; self.location.db.map_y = 2; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Beacon Engine Vault
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = -1; self.location.db.map_y = 2; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Neutral Corridor
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 0; self.location.db.map_y = 1; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Student Gate Arch
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 0; self.location.db.map_y = 0; self.msg("Tagged: " + self.location.key)
+
+# -----------------------------------------------------------------------
+# OASMC AREA — academy campus (y -1 to -3)
+# -----------------------------------------------------------------------
+
+#
+@tel First Courtyard
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 0; self.location.db.map_y = -1; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Sanction Hall
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 1; self.location.db.map_y = -1; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Refectory Entrance
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = -1; self.location.db.map_y = -1; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Dormitory Gallery
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 0; self.location.db.map_y = -2; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Dorm Common Room
+
+#
+@py self.location.db.map_area = "oasmc"; self.location.db.map_x = 1; self.location.db.map_y = -2; self.msg("Tagged: " + self.location.key)
+
+# -----------------------------------------------------------------------
+# SEALED / RESTRICTED ROOMS — separate areas, appear as ^ or v on parent
+# -----------------------------------------------------------------------
+
+#
+@tel Understructure Stair
+
+#
+@py self.location.db.map_area = "understructure"; self.location.db.map_x = 0; self.location.db.map_y = 0; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Faculty Tower Stair
+
+#
+@py self.location.db.map_area = "faculty_tower"; self.location.db.map_x = 0; self.location.db.map_y = 0; self.msg("Tagged: " + self.location.key)
+
+# -----------------------------------------------------------------------
+# Done
+# -----------------------------------------------------------------------
+
+#
+@tel Arrival Pier
+
+#
+@py self.msg("=== Map coordinate setup complete. ===")
