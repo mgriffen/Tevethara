@@ -52,9 +52,9 @@ RACES = {
 }
 
 CLASSES = {
-    "fighter": {
-        "display": "Fighter",
-        "desc": "Masters of weapon and armor, reliable in any melee.",
+    "warrior": {
+        "display": "Warrior",
+        "desc": "Masters of weapon and armor. The backbone of any front line.",
         "instructor": "Drill Yard",
     },
     "rogue": {
@@ -67,19 +67,14 @@ CLASSES = {
         "desc": "Hunters and trackers, deadly at range and at home in the wild.",
         "instructor": "Archery Line",
     },
-    "wizard": {
-        "display": "Wizard",
-        "desc": "Scholars of the arcane, armed with knowledge and spell.",
+    "mage": {
+        "display": "Mage",
+        "desc": "Power through study and discipline. Arcane geometry, controlled channeling, lattice theory.",
         "instructor": "Arcane Lecture Hall",
     },
     "sorcerer": {
         "display": "Sorcerer",
-        "desc": "Magic runs in the blood. Unpredictable. Powerful.",
-        "instructor": "Arcane Lecture Hall",
-    },
-    "warlock": {
-        "display": "Warlock",
-        "desc": "Power borrowed from something older than kingdoms.",
+        "desc": "Raw Celestium channeled through force of will. Powerful. Most who try this path do not survive it.",
         "instructor": "Arcane Lecture Hall",
     },
     "cleric": {
@@ -91,11 +86,6 @@ CLASSES = {
         "display": "Paladin",
         "desc": "Oath-bound holy warriors. The oath is not optional.",
         "instructor": "Oath Chapel",
-    },
-    "bard": {
-        "display": "Bard",
-        "desc": "Performers, historians, and surprisingly capable fighters.",
-        "instructor": "Resonance Studio",
     },
     "druid": {
         "display": "Druid",

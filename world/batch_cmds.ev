@@ -21,6 +21,44 @@
 
 #
 # ------------------------------------------------------------------
+# FERRY — intro cutscene rooms (new player arrival)
+# ------------------------------------------------------------------
+#
+
+#
+# Ferry Passenger Hold (below decks — where new players wake after the cutscene)
+#
+@dig/teleport Ferry Passenger Hold
+
+#
+@desc Ferry Passenger Hold =
+The belly of the ferry. Low beams, tarred rope coiled in neat loops, the smell of bilge water and salt-soaked wood. Hammocks hang empty — the other passengers are already above deck.
+
+A single porthole admits a stripe of grey morning light. Through it: close stone, the underside of the pier structure. The ferry is docked and motionless.
+
+Above you, boots on planking, the creak of the gangplank being lowered, shouted dockhand coordinates. The crossing is over.
+
+The way |wup|n leads to the main deck.
+
+#
+@dig Ferry Upper Deck = up;u, down;d
+
+#
+@tel Ferry Upper Deck
+
+#
+@desc Ferry Upper Deck =
+The main deck, open to the sky. Grey morning light, salt air, the smell of the crossing giving way to the harbor. The other passengers have formed an instinctive queue toward the gangplank — bags retrieved, collars straightened, the posture of people who have been sitting for two hours and are ready to stop.
+
+The gangplank rests on the stone of the Arrival Pier to the |wsouth|n. Anuvara Bay stretches away in every other direction, flat and enormous.
+
+A posted sign on the railing reads: |y"ALL PASSENGERS MUST CLEAR THE VESSEL PRIOR TO CARGO OFFLOAD — §7, Maritime Compliance Act."|n
+
+#
+@tel Limbo
+
+#
+# ------------------------------------------------------------------
 # COMPLIANCE SIDE (SW — public arrival face)
 # ------------------------------------------------------------------
 #
@@ -43,6 +81,17 @@ A painted sign above the gate reads: |y"NEW INTAKE — FOLLOW THE MARKED STONES.
 
 #
 @set Arrival Pier/db.intake_step = 0
+
+#
+# Connect the ferry gangplank: Ferry Upper Deck → south → Arrival Pier (one-way, no re-boarding)
+#
+@tel Ferry Upper Deck
+
+#
+@open south;s = Arrival Pier
+
+#
+@tel Arrival Pier
 
 #
 # 2. Pierside Queue
@@ -389,10 +438,8 @@ Your instructor location is posted here by discipline:
   |yRanger|n      → |wArchery Line|n (east yard gate)
   |yWizard|n      → |wArcane Lecture Hall|n (tower, north wing)
   |ySorcerer|n    → |wArcane Lecture Hall|n (tower, north wing)
-  |yWarlock|n     → |wArcane Lecture Hall|n (tower, north wing)
   |yCleric|n      → |wOath Chapel|n (south wing)
   |yPaladin|n     → |wOath Chapel|n (south wing)
-  |yBard|n        → |wResonance Studio|n (west wing)
   |yDruid|n       → |wGreen Court Conservatory|n (inner garden)
 
 Find your instructor and present your |wAcademy Intake Token|n to begin training.
@@ -545,10 +592,11 @@ A Compliance Guard stands before the door, not looking at you, apparently absorb
 @py
 from evennia import search_object
 regular_rooms = [
+    "Ferry Passenger Hold", "Ferry Upper Deck",
     "Arrival Pier", "Pierside Queue", "Manifest Hall", "Intake Counter",
     "Inspection Yard", "Fee and Berth Office", "Harbor Notices Board",
     "Name Registry", "Identity Gallery", "Aptitude Annex",
-    "Oath and Stamp Station", "Neutral Corridor", "Student Gate Arch",
+    "Oath and Stamp Station", "Neutral Corridor Checkpoint", "Neutral Corridor", "Student Gate Arch",
     "First Courtyard", "Sanction Hall", "Refectory Entrance",
     "Dormitory Gallery", "Dorm Common Room",
     "Understructure Stair", "Faculty Tower Stair", "Beacon Engine Vault",

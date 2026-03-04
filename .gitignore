@@ -9,6 +9,10 @@ server/.cache/
 *.sqlite3
 *.db
 
+# Virtual environments
+.venv/
+venv/
+
 # Editor/OS
 .vscode/
 .idea/
