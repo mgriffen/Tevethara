@@ -16,7 +16,7 @@ Map symbols:
     |  = north/south corridor
 """
 
-from evennia.utils.search import search_object
+from evennia.utils.search import search_objects_by_typeclass
 
 # Cardinal directions: exit key -> (dx, dy)
 CARDINAL = {
@@ -39,7 +39,7 @@ VP_V = 3   # 7 rooms tall   → 13 chars
 
 def _get_area_rooms(area_name):
     """Return {(x, y): room} for all tagged rooms in the named area."""
-    rooms = search_object("*", typeclass="typeclasses.rooms.Room")
+    rooms = search_objects_by_typeclass("typeclasses.rooms.Room")
     result = {}
     for room in rooms:
         if (room.db.map_area == area_name

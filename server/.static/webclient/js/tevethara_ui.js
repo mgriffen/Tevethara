@@ -11,23 +11,24 @@
         // Current UI mode ('dashboard' or 'compact')
         mode: 'dashboard',
 
+        // HUD visibility ('collapsed' or 'expanded') — collapsed by default
+        hudState: 'collapsed',
+
         // Initialize the custom UI
         init: function() {
-            console.log("Tevethara UI initializing...");
-
-            // Load saved UI mode preference
+            // Load saved preferences and apply before anything renders
             this.loadUIMode();
+            this.loadHudState();
 
-            // Set up UI toggle button
+            // Set up toggle buttons
             this.setupUIToggle();
+            this.setupHudToggle();
 
             // Set up message handlers for state updates from server
             this.setupMessageHandlers();
 
             // Apply initial mock data (will be replaced by server updates)
             this.applyMockData();
-
-            console.log("Tevethara UI initialized!");
         },
 
         // Load UI mode from localStorage
@@ -58,27 +59,63 @@
             const toggleBtn = document.getElementById('ui-mode-toggle');
             if (toggleBtn) {
                 toggleBtn.addEventListener('click', () => {
-                    // Toggle mode
                     this.mode = (this.mode === 'dashboard') ? 'compact' : 'dashboard';
                     this.applyUIMode();
                     this.saveUIMode();
-                    console.log('UI mode switched to:', this.mode);
                 });
             }
         },
 
-        // Set up handlers for incoming messages from server
-        setupMessageHandlers: function() {
-            // This will be expanded to handle JSON state updates from the server
-            // For now, we'll just log that we're ready
-            console.log("Message handlers ready for server state updates");
+        // HUD collapse/expand
+        loadHudState: function() {
+            const saved = localStorage.getItem('tevethara_hud_state');
+            // Default is 'collapsed'; only expand if explicitly saved as expanded
+            this.hudState = (saved === 'expanded') ? 'expanded' : 'collapsed';
+            this.applyHudState();
+        },
 
-            // Example: Listen for custom Evennia messages
-            // Evennia.msg will be available when integrated with Evennia's webclient
-            if (typeof Evennia !== 'undefined') {
-                // We can hook into Evennia's message system here
-                console.log("Evennia detected, ready for OOB messages");
+        saveHudState: function() {
+            localStorage.setItem('tevethara_hud_state', this.hudState);
+        },
+
+        applyHudState: function() {
+            const container = document.getElementById('tevethara-container');
+            if (!container) return;
+            if (this.hudState === 'collapsed') {
+                container.classList.add('hud-collapsed');
+            } else {
+                container.classList.remove('hud-collapsed');
             }
+        },
+
+        setupHudToggle: function() {
+            const btn = document.getElementById('hud-toggle');
+            if (btn) {
+                btn.addEventListener('click', () => {
+                    this.hudState = (this.hudState === 'collapsed') ? 'expanded' : 'collapsed';
+                    this.applyHudState();
+                    this.saveHudState();
+                });
+            }
+        },
+
+        // Set up handlers for OOB messages from the server.
+        // Each OOB command arrives as its own named event on the emitter,
+        // e.g. self.msg(oob=[("tev_map", [], {...})]) fires Evennia.emitter "tev_map".
+        setupMessageHandlers: function() {
+            const register = () => {
+                if (typeof Evennia !== 'undefined' && Evennia.emitter) {
+                    Evennia.emitter.on('tev_map', (args, kwargs) => {
+                        const data = kwargs && kwargs.data
+                            ? kwargs.data
+                            : '[ No map data ]';
+                        TevetharaUI.updateMap(data);
+                    });
+                } else {
+                    setTimeout(register, 200);
+                }
+            };
+            register();
         },
 
         // Update room information in header
@@ -178,6 +215,36 @@
                     conditionsDisplay.appendChild(tag);
                 });
             }
+        },
+
+        // Update the ASCII map display
+        updateMap: function(asciiMap) {
+            const content = document.getElementById('map-content');
+            if (!content) return;
+            content.innerHTML = '';
+            const pre = document.createElement('pre');
+            pre.style.margin = '0';
+            pre.style.color = '#666';
+            pre.style.fontSize = '11px';
+            pre.style.lineHeight = '1.2';
+            pre.textContent = asciiMap;
+            content.appendChild(pre);
+        },
+
+        // Append a line to the world announcements panel
+        appendWorldEvent: function(text) {
+            const content = document.getElementById('world-content');
+            if (!content) return;
+            // Remove placeholder on first real event
+            const placeholder = content.querySelector('.panel-placeholder');
+            if (placeholder) placeholder.remove();
+
+            const line = document.createElement('div');
+            line.style.marginBottom = '2px';
+            line.innerHTML = text;
+            content.appendChild(line);
+            // Auto-scroll to bottom
+            content.scrollTop = content.scrollHeight;
         },
 
         // Update mob/encounter indicator
