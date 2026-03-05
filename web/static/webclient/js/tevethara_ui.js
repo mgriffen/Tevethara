@@ -100,12 +100,17 @@
         },
 
         // Set up handlers for OOB messages from the server.
-        // Evennia emits a single "oob" event; our command name is nested inside.
+        // Evennia's "oob" events hit the "default" emitter listener (plugin_handler.onDefault),
+        // which loops through plugins calling onUnknownCmd. We replace the default listener
+        // with our own wrapper that intercepts tev_map and delegates everything else.
         setupMessageHandlers: function() {
-            const register = () => {
-                if (typeof Evennia !== 'undefined' && Evennia.emitter) {
-                    Evennia.emitter.on('oob', (args, kwargs) => {
-                        if (!Array.isArray(args)) return;
+            const patch = () => {
+                if (typeof Evennia === 'undefined' || !Evennia.emitter) {
+                    setTimeout(patch, 100);
+                    return;
+                }
+                Evennia.emitter.on('default', function(cmdname, args, kwargs) {
+                    if (cmdname === 'oob' && Array.isArray(args)) {
                         args.forEach(cmdArr => {
                             if (!Array.isArray(cmdArr)) return;
                             const [cmd, , cmdKwargs] = cmdArr;
@@ -114,14 +119,17 @@
                                     ? cmdKwargs.data
                                     : '[ No map data ]';
                                 TevetharaUI.updateMap(data);
+                            } else if (cmd === 'tev_quit') {
+                                TevetharaUI.clearSession();
                             }
                         });
-                    });
-                } else {
-                    setTimeout(register, 200);
-                }
+                        return; // handled — suppress "Unhandled event" message
+                    }
+                    // Not ours — delegate to the original plugin handler
+                    plugin_handler.onDefault(cmdname, args, kwargs);
+                });
             };
-            register();
+            patch();
         },
 
         // Update room information in header
@@ -223,18 +231,17 @@
             }
         },
 
-        // Update the ASCII map display
+        // Update the ASCII map display (asciiMap is HTML with colored spans)
         updateMap: function(asciiMap) {
             const content = document.getElementById('map-content');
             if (!content) return;
-            content.innerHTML = '';
-            const pre = document.createElement('pre');
-            pre.style.margin = '0';
-            pre.style.color = '#666';
-            pre.style.fontSize = '11px';
-            pre.style.lineHeight = '1.2';
-            pre.textContent = asciiMap;
-            content.appendChild(pre);
+            content.innerHTML = '<pre class="map-pre">' + asciiMap + '</pre>';
+        },
+
+        // Clear the Django session cookie so the next page load requires a fresh login.
+        // Called when the server sends tev_quit (player typed 'quit').
+        clearSession: function() {
+            document.cookie = 'sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
         },
 
         // Append a line to the world announcements panel

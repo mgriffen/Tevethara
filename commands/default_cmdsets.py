@@ -15,6 +15,7 @@ own cmdsets by inheriting from them or directly from `evennia.CmdSet`.
 """
 
 from evennia import default_cmds
+from commands.command import CmdQuit
 from commands.moon import CmdMoon
 from commands.map_commands import CmdMapSet
 from commands.oasmc_intake import OASMCIntakeCmdSet
@@ -57,6 +58,7 @@ class AccountCmdSet(default_cmds.AccountCmdSet):
         Populates the cmdset
         """
         super().at_cmdset_creation()
+        self.add(CmdQuit())
         #
         # any commands you add below will overload the default ones.
         #

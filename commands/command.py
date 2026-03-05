@@ -6,6 +6,7 @@ Commands describe the input the account can do to the game.
 """
 
 from evennia.commands.command import Command as BaseCommand
+from evennia.commands.default.account import CmdQuit as DefaultCmdQuit
 
 # from evennia import default_cmds
 
@@ -24,6 +25,33 @@ class Command(BaseCommand):
         """Send the ASCII prompt after every command."""
         if hasattr(self.caller, "update_prompt"):
             self.caller.update_prompt()
+
+
+class CmdQuit(DefaultCmdQuit):
+    """Overrides quit to require a fresh login after disconnecting."""
+
+    def func(self):
+        # Directly clear the Django session so auto-login can't fire on reload.
+        # The portal's disconnect() uses a nonce that drifts (middleware increments it
+        # on every HTTP request), so we bypass that and clear auth fields directly.
+        sessions = [self.session] if "all" not in self.switches else self.account.sessions.all()
+        for session in sessions:
+            csessid = getattr(session, "csessid", None)
+            if csessid:
+                try:
+                    from importlib import import_module
+                    from django.conf import settings
+                    SessionStore = import_module(settings.SESSION_ENGINE).SessionStore
+                    dsession = SessionStore(session_key=csessid)
+                    dsession["webclient_authenticated_uid"] = None
+                    dsession["webclient_authenticated_nonce"] = 0
+                    dsession["website_authenticated_uid"] = None
+                    dsession.delete()
+                except Exception:
+                    pass
+        # Belt-and-suspenders: tell the client JS to delete its session cookie too.
+        self.session.msg(oob=[("tev_quit", [], {})])
+        super().func()
 
 
 # -------------------------------------------------------------

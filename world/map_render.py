@@ -2,21 +2,44 @@
 ASCII map renderer for Tevethara.
 
 Room coordinate attributes:
-    room.db.map_x    = int   (east = +, west = -)
-    room.db.map_y    = int   (north = +, south = -)
-    room.db.map_area = str   (area name, e.g. "oasmc", "ferry")
+    room.db.map_x      = int   (east = +, west = -)
+    room.db.map_y      = int   (north = +, south = -)
+    room.db.map_area   = str   (area name, e.g. "oasmc", "ferry")
+    room.db.map_symbol = str   (optional POI override, one of the keys in SYMBOL_CLASS)
 
-Map symbols:
-    @  = player's current room
-    #  = regular room
-    ^  = has a cross-area exit leading "up" (up, climb, ladder...)
-    v  = has a cross-area exit leading "down" (down, hatch, descend...)
-    *  = has both up- and down-type cross-area exits
-    -  = east/west corridor
-    |  = north/south corridor
+Map symbols and CSS classes:
+    @  map-player   Player's current room (yellow)
+    #  map-room     Regular room (gray)
+    ^  map-vert     Cross-area exit up (blue)
+    v  map-vert     Cross-area exit down (blue)
+    *  map-vert     Both up and down exits (blue)
+    !  map-npc      NPC / quest giver (orange)
+    $  map-shop     Shop / merchant (green)
+    +  map-rest     Healer / inn / rest point (teal)
+    ?  map-unknown  Sealed / unknown room (purple)
+    -  map-corridor East/west corridor (dark gray)
+    |  map-corridor North/south corridor (dark gray)
 """
 
 from evennia.utils.search import search_objects_by_typeclass
+
+# Maps symbol character → CSS class for colored rendering
+SYMBOL_CLASS = {
+    "@": "map-player",
+    "#": "map-room",
+    "^": "map-vert",
+    "v": "map-vert",
+    "*": "map-vert",
+    "!": "map-npc",
+    "$": "map-shop",
+    "+": "map-rest",
+    "?": "map-unknown",
+    "-": "map-corridor",
+    "|": "map-corridor",
+}
+
+# POI symbols that can be set via room.db.map_symbol
+POI_SYMBOLS = frozenset({"!", "$", "+", "?"})
 
 # Cardinal directions: exit key -> (dx, dy)
 CARDINAL = {
@@ -34,7 +57,7 @@ DOWN_EXITS = frozenset({"down", "d", "descend", "hatch", "downstairs", "below"})
 # Total visible: (VP_H*2+1) rooms wide, (VP_V*2+1) rooms tall.
 # Character grid: (VP_H*4+1) wide, (VP_V*4+1) tall.
 VP_H = 5   # 11 rooms wide  → 21 chars
-VP_V = 3   # 7 rooms tall   → 13 chars
+VP_V = 6   # 13 rooms tall  → 25 chars
 
 
 def _get_area_rooms(area_name):
@@ -54,13 +77,17 @@ def _room_symbol(room, player_room):
     if room == player_room:
         return "@"
 
+    # Builder-set POI override
+    poi = getattr(room.db, "map_symbol", None)
+    if poi and poi in POI_SYMBOLS:
+        return poi
+
     has_up = has_down = False
     for ex in room.exits:
         ek = ex.key.lower()
         dest = ex.destination
         if not dest:
             continue
-        # Cross-area exit?
         if dest.db.map_area != room.db.map_area:
             if ek in UP_EXITS:
                 has_up = True
@@ -74,6 +101,16 @@ def _room_symbol(room, player_room):
     if has_down:
         return "v"
     return "#"
+
+
+def _span(char):
+    """Wrap a map character in its CSS span. Spaces pass through as-is."""
+    if char == " ":
+        return " "
+    css = SYMBOL_CLASS.get(char)
+    if css:
+        return f'<span class="{css}">{char}</span>'
+    return char
 
 
 def render_area_map(player_room):
@@ -142,4 +179,8 @@ def render_area_map(player_room):
             elif dy == 1  and 0 <= cy - 1 < gh: grid[cy - 1][cx]   = "|"
             elif dy == -1 and 0 <= cy + 1 < gh: grid[cy + 1][cx]   = "|"
 
-    return "\n".join("".join(row) for row in grid)
+    # Render each row as HTML spans, joining rows with newlines inside a single string
+    lines = []
+    for row in grid:
+        lines.append("".join(_span(ch) for ch in row))
+    return "\n".join(lines)

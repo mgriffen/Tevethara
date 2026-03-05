@@ -99,19 +99,19 @@
   border: 1px solid #555;
 }
 
-/* ===== Right Sidebar (1/3) ===== */
+/* ===== Right Sidebar (~25%) ===== */
 #right-panel {
-  flex: 1;
-  min-width: 0;
+  flex: 0 0 25%;
+  min-width: 180px;
   display: flex;
   flex-direction: column;
   border: 1px solid #555;
   background-color: #080810;
 }
 
-/* Map box: top 40% of sidebar */
+/* Map box: top 38% of sidebar */
 #map-box {
-  flex: 0 0 40%;
+  flex: 0 0 38%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -144,10 +144,36 @@
   overflow-y: auto;
   padding: 8px;
   font-family: 'Courier New', monospace;
-  font-size: 12px;
+  font-size: 13px;
   color: #888;
   line-height: 1.4;
 }
+
+/* Center the map pre within its panel */
+#map-box .panel-content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+/* Map pre element */
+.map-pre {
+  margin: 0;
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* Map symbol colors */
+.map-player   { color: #ffd700; font-weight: bold; }  /* gold — player @ */
+.map-room     { color: #777777; }                      /* gray — regular room */
+.map-corridor { color: #444444; }                      /* dark gray — - and | */
+.map-vert     { color: #6699ff; }                      /* blue — ^ v * */
+.map-npc      { color: #ff9944; }                      /* orange — ! NPC/quest */
+.map-shop     { color: #55cc55; }                      /* green — $ shop */
+.map-rest     { color: #44ddcc; }                      /* teal — + healer/rest */
+.map-unknown  { color: #aa66ff; }                      /* purple — ? sealed */
 
 .panel-content::-webkit-scrollbar {
   width: 6px;
@@ -171,8 +197,8 @@
 
 #messagewindow {
   font-family: 'Courier New', monospace;
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 16px;
+  line-height: 1.6;
   color: #e0e0e0;
 }
 

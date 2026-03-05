@@ -182,9 +182,9 @@ class Character(ObjectParent, DefaultCharacter):
         map_str = render_area_map(self.location)
         self.msg(oob=[("tev_map", [], {"data": map_str})])
 
-    def at_after_move(self, source_location, move_type="move", **kwargs):
+    def at_post_move(self, source_location, move_type="move", **kwargs):
         """Send updated map whenever the character moves."""
-        super().at_after_move(source_location, move_type=move_type, **kwargs)
+        super().at_post_move(source_location, move_type=move_type, **kwargs)
         self.send_map()
 
     def at_post_puppet(self, **kwargs):
