@@ -6,8 +6,18 @@ __pycache__/
 server/logs/
 server/db/
 server/.cache/
+server/conf/secret_settings.py
 *.sqlite3
 *.db
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.jks
 
 # Virtual environments
 .venv/
@@ -17,6 +27,9 @@ venv/
 .vscode/
 .idea/
 .DS_Store
+Thumbs.db
+Zone.Identifier
+*:Zone.Identifier
 
 # Databases
 *.db3
