@@ -122,7 +122,8 @@ _BEAT_5 = (
     "|xYou have arrived.|n"
 )
 
-# Pairs of (beat_text, pause_after_in_seconds)
+# Pairs of (beat_text, pause_after_in_seconds). The browser renders these
+# through the tev_intro OOB handler; telnet sessions use a plain fallback.
 _BEATS = [
     (_BEAT_0, 12),
     (_BEAT_1, 14),
@@ -131,6 +132,9 @@ _BEATS = [
     (_BEAT_4, 12),
     (_BEAT_5, 6),
 ]
+
+_INTRO_CHAR_DELAY_MS = 12
+_INTRO_NEWLINE_DELAY_MS = 80
 
 
 class Character(ObjectParent, DefaultCharacter):
@@ -190,6 +194,7 @@ class Character(ObjectParent, DefaultCharacter):
     def at_post_puppet(self, **kwargs):
         if not self.db.intro_seen:
             self._run_intro_cutscene()
+            return
         else:
             super().at_post_puppet(**kwargs)
         self.update_prompt()
@@ -199,11 +204,38 @@ class Character(ObjectParent, DefaultCharacter):
     # Intro cutscene
     # ------------------------------------------------------------------
 
-    def _typewrite(self, text, char_speed=0.030, done_callback=None):
+    @staticmethod
+    def _visible_intro_counts(text):
+        """Count visible chars/newlines, ignoring Evennia pipe color codes."""
+        visible_chars = 0
+        newlines = 0
+        idx = 0
+        while idx < len(text):
+            char = text[idx]
+            if char == "|" and idx + 1 < len(text):
+                idx += 2
+                continue
+            if char == "\n":
+                newlines += 1
+            else:
+                visible_chars += 1
+            idx += 1
+        return visible_chars, newlines
+
+    def _intro_duration(self):
+        """Return the browser cutscene duration in seconds, plus a small buffer."""
+        total_ms = 0
+        for text, pause in _BEATS:
+            visible_chars, newlines = self._visible_intro_counts(text)
+            total_ms += visible_chars * _INTRO_CHAR_DELAY_MS
+            total_ms += newlines * _INTRO_NEWLINE_DELAY_MS
+            total_ms += pause * 1000
+        return (total_ms / 1000.0) + 0.75
+
+    def _typewrite_fallback(self, text, char_speed=0.012, done_callback=None):
         """
-        Display text one line at a time. Delay per line scales with line
-        length at ~30ms/character to approximate a typewriter feel.
-        If the character disconnects mid-scene, stops silently.
+        Telnet fallback for intro text. The webclient gets the real typewriter
+        through OOB; this keeps non-browser sessions readable.
         """
         from evennia.utils.utils import delay
 
@@ -218,18 +250,45 @@ class Character(ObjectParent, DefaultCharacter):
                 return
             self.msg(lines[idx])
             content = lines[idx].strip()
-            speed = 0.25 if not content else max(0.20, len(content) * char_speed)
+            speed = 0.08 if not content else max(0.12, len(content) * char_speed)
             delay(speed, _send, idx + 1)
 
         _send(0)
+
+    def _has_webclient_session(self):
+        """Best-effort detection of an Evennia browser webclient session."""
+        for session in self.sessions.all():
+            protocol_key = str(getattr(session, "protocol_key", "")).lower()
+            client_name = str(
+                getattr(session, "protocol_flags", {}).get("CLIENTNAME", "")
+            ).lower()
+            if "webclient" in protocol_key or "websocket" in protocol_key:
+                return True
+            if "webclient" in client_name or "websocket" in client_name:
+                return True
+        return False
 
     def _run_intro_cutscene(self):
         from evennia.utils.search import search_object
         from evennia.utils.utils import delay
 
+        self.db.in_intro_cutscene = True
+
         ferry = search_object("Ferry Passenger Hold")
         if ferry:
             self.move_to(ferry[0], quiet=True, move_type="teleport")
+
+        if self._has_webclient_session():
+            self.msg(oob=[("tev_intro", [], {
+                "beats": [
+                    {"text": text, "pause": pause}
+                    for text, pause in _BEATS
+                ],
+                "charDelayMs": _INTRO_CHAR_DELAY_MS,
+                "newlineDelayMs": _INTRO_NEWLINE_DELAY_MS,
+            })])
+            delay(self._intro_duration(), self._intro_finish)
+            return
 
         def play(idx):
             if not self.sessions.all():
@@ -240,11 +299,12 @@ class Character(ObjectParent, DefaultCharacter):
             text, pause = _BEATS[idx]
             def after_text():
                 delay(pause, play, idx + 1)
-            self._typewrite(text, done_callback=after_text)
+            self._typewrite_fallback(text, done_callback=after_text)
 
         play(0)
 
     def _intro_finish(self):
+        self.db.in_intro_cutscene = False
         self.db.intro_seen = True
         self.send_map()
         if self.location:
@@ -257,3 +317,4 @@ class Character(ObjectParent, DefaultCharacter):
                     from_obj=from_obj,
                 )
             self.location.for_contents(_announce, exclude=[self], from_obj=self)
+        self.update_prompt()

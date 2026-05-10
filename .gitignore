@@ -23,6 +23,9 @@ server/conf/secret_settings.py
 .venv/
 venv/
 
+# Private working files (never commit)
+.working/
+
 # Editor/OS
 .vscode/
 .idea/

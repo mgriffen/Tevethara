@@ -14,6 +14,11 @@
         // HUD visibility ('collapsed' or 'expanded') — collapsed by default
         hudState: 'collapsed',
 
+        introTimers: [],
+        introActive: false,
+        introCurrentSpan: null,
+        introCurrentClass: '',
+
         // Initialize the custom UI
         init: function() {
             // Load saved preferences and apply before anything renders
@@ -121,6 +126,8 @@
                                 TevetharaUI.updateMap(data);
                             } else if (cmd === 'tev_quit') {
                                 TevetharaUI.clearSession();
+                            } else if (cmd === 'tev_intro') {
+                                TevetharaUI.startIntro(cmdKwargs || {});
                             }
                         });
                         return; // handled — suppress "Unhandled event" message
@@ -242,6 +249,155 @@
         // Called when the server sends tev_quit (player typed 'quit').
         clearSession: function() {
             document.cookie = 'sessionid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        },
+
+        // Render the new-character ferry dream as a single in-place cutscene.
+        startIntro: function(payload) {
+            const messageWindow = document.getElementById('messagewindow');
+            if (!messageWindow) return;
+
+            this.stopIntroTimers();
+            this.introActive = true;
+            this.setInputLocked(true);
+
+            const mapContent = document.getElementById('map-content');
+            if (mapContent) {
+                mapContent.innerHTML = '<pre class="panel-placeholder">[ No map data ]</pre>';
+            }
+
+            messageWindow.innerHTML = '';
+            const scene = document.createElement('div');
+            scene.className = 'intro-cutscene';
+            const pre = document.createElement('pre');
+            pre.className = 'intro-text';
+            scene.appendChild(pre);
+            messageWindow.appendChild(scene);
+
+            this.introCurrentSpan = null;
+            this.introCurrentClass = '';
+
+            const beats = Array.isArray(payload.beats) ? payload.beats : [];
+            const charDelay = Number(payload.charDelayMs) || 12;
+            const newlineDelay = Number(payload.newlineDelayMs) || 80;
+
+            const playBeat = (beatIndex) => {
+                if (!this.introActive || beatIndex >= beats.length) {
+                    this.finishIntroUI();
+                    return;
+                }
+
+                const beat = beats[beatIndex] || {};
+                const text = beat.text || '';
+                const pauseMs = Math.max(0, Number(beat.pause) || 0) * 1000;
+
+                this.typeIntroText(pre, text, charDelay, newlineDelay, () => {
+                    this.queueIntroTimer(() => playBeat(beatIndex + 1), pauseMs);
+                });
+            };
+
+            playBeat(0);
+        },
+
+        stopIntroTimers: function() {
+            this.introTimers.forEach(timerId => clearTimeout(timerId));
+            this.introTimers = [];
+        },
+
+        queueIntroTimer: function(callback, delayMs) {
+            const timerId = setTimeout(() => {
+                this.introTimers = this.introTimers.filter(id => id !== timerId);
+                callback();
+            }, delayMs);
+            this.introTimers.push(timerId);
+        },
+
+        setInputLocked: function(locked) {
+            const inputFields = document.querySelectorAll('#inputfield, .inputfield');
+            const sendButtons = document.querySelectorAll('#inputsend, .inputsend');
+            inputFields.forEach(inputField => {
+                inputField.disabled = locked;
+                inputField.value = '';
+                inputField.placeholder = locked ? '...' : '';
+            });
+            sendButtons.forEach(sendButton => {
+                sendButton.disabled = locked;
+            });
+            document.body.classList.toggle('intro-running', locked);
+        },
+
+        finishIntroUI: function() {
+            this.stopIntroTimers();
+            this.introActive = false;
+            this.introCurrentSpan = null;
+            this.introCurrentClass = '';
+            this.setInputLocked(false);
+        },
+
+        typeIntroText: function(container, text, charDelay, newlineDelay, done) {
+            let idx = 0;
+
+            const step = () => {
+                if (!this.introActive) return;
+                if (idx >= text.length) {
+                    done();
+                    return;
+                }
+
+                const ch = text[idx];
+                if (ch === '|' && idx + 1 < text.length) {
+                    this.applyIntroPipeCode(text[idx + 1]);
+                    idx += 2;
+                    step();
+                    return;
+                }
+
+                this.appendIntroChar(container, ch);
+                idx += 1;
+                this.scrollMainToBottom();
+                this.queueIntroTimer(step, ch === '\n' ? newlineDelay : charDelay);
+            };
+
+            step();
+        },
+
+        applyIntroPipeCode: function(code) {
+            const colorMap = {
+                n: '',
+                x: 'intro-muted',
+                m: 'intro-celestium',
+                r: 'intro-red',
+                w: 'intro-white',
+                y: 'intro-yellow',
+                c: 'intro-cyan',
+                b: 'intro-blue',
+                g: 'intro-green'
+            };
+            if (Object.prototype.hasOwnProperty.call(colorMap, code)) {
+                this.introCurrentClass = colorMap[code];
+                this.introCurrentSpan = null;
+            }
+        },
+
+        appendIntroChar: function(container, ch) {
+            if (ch === '\n') {
+                container.appendChild(document.createTextNode('\n'));
+                this.introCurrentSpan = null;
+                return;
+            }
+
+            if (!this.introCurrentSpan) {
+                this.introCurrentSpan = document.createElement('span');
+                if (this.introCurrentClass) {
+                    this.introCurrentSpan.className = this.introCurrentClass;
+                }
+                container.appendChild(this.introCurrentSpan);
+            }
+            this.introCurrentSpan.textContent += ch;
+        },
+
+        scrollMainToBottom: function() {
+            const main = document.getElementById('main');
+            if (main) main.scrollTop = main.scrollHeight;
         },
 
         // Append a line to the world announcements panel

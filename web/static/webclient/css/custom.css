@@ -202,6 +202,67 @@
   color: #e0e0e0;
 }
 
+/* ===== Intro Cutscene ===== */
+.intro-cutscene {
+  min-height: 100%;
+  color: #cfcfcf;
+}
+
+.intro-text {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-family: 'Courier New', monospace;
+  font-size: 16px;
+  line-height: 1.65;
+  color: #cfcfcf;
+}
+
+.intro-muted {
+  color: #66666f;
+}
+
+.intro-celestium {
+  color: #d05cff;
+  text-shadow: 0 0 8px rgba(208, 92, 255, 0.45);
+}
+
+.intro-red {
+  color: #ff5d5d;
+  text-shadow: 0 0 7px rgba(255, 93, 93, 0.35);
+}
+
+.intro-white {
+  color: #f2f2f2;
+}
+
+.intro-yellow {
+  color: #ffcc66;
+}
+
+.intro-cyan {
+  color: #88ccff;
+}
+
+.intro-blue {
+  color: #7aa2ff;
+}
+
+.intro-green {
+  color: #78d878;
+}
+
+body.intro-running #input {
+  opacity: 0.45;
+}
+
+body.intro-running #inputfield,
+body.intro-running .inputfield,
+body.intro-running #inputsend,
+body.intro-running .inputsend {
+  cursor: default;
+}
+
 /* Scrollbar styling */
 #main::-webkit-scrollbar {
   width: 10px;
@@ -411,7 +472,8 @@
   padding: 8px;
 }
 
-#inputfield {
+#inputfield,
+.inputfield {
   background-color: #0d0d0d;
   color: #e0e0e0;
   border: 1px solid #3a3a5a;
@@ -421,20 +483,39 @@
   min-height: 40px;
 }
 
-#inputfield:focus {
+#inputfield:focus,
+.inputfield:focus {
   outline: none;
   border-color: #5a5a7a;
   box-shadow: 0 0 5px rgba(90, 90, 122, 0.5);
 }
 
-#inputsend {
+#inputsend,
+.inputsend {
   background-color: #3a3a5a;
   border-color: #5a5a7a;
   color: #ffffff;
 }
 
-#inputsend:hover {
+#inputsend:hover,
+.inputsend:hover {
   background-color: #4a4a6a;
+}
+
+body.intro-running #inputfield:disabled,
+body.intro-running .inputfield:disabled {
+  background-color: #050508;
+  color: #5f6070;
+  border-color: #24243a;
+  opacity: 1;
+}
+
+body.intro-running #inputsend:disabled,
+body.intro-running .inputsend:disabled {
+  background-color: #202035;
+  border-color: #30304a;
+  color: #77788a;
+  opacity: 1;
 }
 
 /* ===== HUD Toggle Button ===== */

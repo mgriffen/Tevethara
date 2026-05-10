@@ -36,6 +36,17 @@ SERVERNAME = "tevethara_game"
 
 
 ######################################################################
+# Prototypes
+######################################################################
+
+PROTOTYPE_MODULES = [
+    "world.prototypes._bases",
+    "world.prototypes.starter_weapons",
+    "world.prototypes.oasmc",
+]
+
+
+######################################################################
 # Settings given in secret_settings.py override those in this file.
 ######################################################################
 try:

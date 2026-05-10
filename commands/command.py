@@ -26,6 +26,12 @@ class Command(BaseCommand):
         if hasattr(self.caller, "update_prompt"):
             self.caller.update_prompt()
 
+    def at_pre_cmd(self):
+        """Block normal commands while the unskippable intro dream is running."""
+        if getattr(self.caller.db, "in_intro_cutscene", False):
+            return True
+        return False
+
 
 class CmdQuit(DefaultCmdQuit):
     """Overrides quit to require a fresh login after disconnecting."""
