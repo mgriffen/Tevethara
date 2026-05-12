@@ -42,7 +42,10 @@ SERVERNAME = "tevethara_game"
 PROTOTYPE_MODULES = [
     "world.prototypes._bases",
     "world.prototypes.starter_weapons",
+    "world.prototypes.starter_armor",
+    "world.prototypes.starter_consumables",
     "world.prototypes.oasmc",
+    "world.prototypes.ferry",
 ]
 
 

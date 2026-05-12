@@ -38,7 +38,7 @@ A single porthole admits a stripe of grey morning light. Through it: close stone
 
 Above you, boots on planking, the creak of the gangplank being lowered, shouted dockhand coordinates. The crossing is over.
 
-The way |wup|n leads to the main deck.
+A trapdoor in the floor opens onto a ladder leading |wdown|n into the cargo hold. The way |wup|n leads to the main deck.
 
 #
 @dig Ferry Upper Deck = up;u, down;d
@@ -620,6 +620,73 @@ if checkpoints:
         if ex.key.lower() in ("north", "n"):
             ex.swap_typeclass("typeclasses.exits.TokenGatedExit")
             caller.msg(f"TokenGatedExit set on: {ex.key} (from {room.key})")
+
+#
+# ------------------------------------------------------------------
+# FERRY CARGO HOLD — three rooms below the Passenger Hold
+# ------------------------------------------------------------------
+#
+
+#
+@tel Ferry Passenger Hold
+
+#
+@dig Cargo Hold Ladder Landing = down;d, up;u
+
+#
+@tel Cargo Hold Ladder Landing
+
+#
+@desc Cargo Hold Ladder Landing =
+The bottom of the ladder. The space opens out in two directions, lit by a single hanging lantern, its wick trimmed low and swinging gently with the ferry's motion against the dock. The smell down here is older than the deck above — pine pitch, damp canvas, the faint sourness of crates that have made too many crossings.
+
+Two passageways open from the landing. To the |wnorth|n, the forward hold extends toward the bow. To the |wsouth|n, the aft hold. The ladder leads back |wup|n to the passenger hold.
+
+#
+@dig Cargo Hold Forward = north;n, south;s
+
+#
+@tel Cargo Hold Forward
+
+#
+@desc Cargo Hold Forward =
+The forward end of the cargo hold. Crates stamped with the seals of half a dozen northern trade houses are lashed in tight rows, every knot tested twice. There is no room here to do anything but turn around — this section has been packed for the return leg, and the dockworkers will be down to break it open within the hour.
+
+The only way out is back |wsouth|n to the ladder landing.
+
+#
+@tel Cargo Hold Ladder Landing
+
+#
+@dig Cargo Hold Aft = south;s, north;n
+
+#
+@tel Cargo Hold Aft
+
+#
+@desc Cargo Hold Aft =
+The aft hold is mostly empty. A few personal bags and a pair of trunks have been roped together near the bulkhead, waiting for their owners to claim them before the ferry turns around. The wood underfoot is worn smooth from generations of hauling.
+
+The only way out is back |wnorth|n to the ladder landing.
+
+#
+# Spawn the ferry attendant in the Passenger Hold
+#
+@tel Ferry Passenger Hold
+
+#
+@spawn ferry_attendant
+
+#
+# Spawn the satchel and letter in the aft cargo hold
+#
+@tel Cargo Hold Aft
+
+#
+@spawn traveling_satchel
+
+#
+@spawn ferry_letter
 
 #
 # ------------------------------------------------------------------

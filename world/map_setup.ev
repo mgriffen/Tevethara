@@ -182,6 +182,28 @@
 @py self.location.db.map_area = "faculty_tower"; self.location.db.map_x = 0; self.location.db.map_y = 0; self.msg("Tagged: " + self.location.key)
 
 # -----------------------------------------------------------------------
+# FERRY CARGO HOLD — below decks
+# -----------------------------------------------------------------------
+
+#
+@tel Cargo Hold Ladder Landing
+
+#
+@py self.location.db.map_area = "ferry_below"; self.location.db.map_x = 0; self.location.db.map_y = 0; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Cargo Hold Forward
+
+#
+@py self.location.db.map_area = "ferry_below"; self.location.db.map_x = 0; self.location.db.map_y = 1; self.msg("Tagged: " + self.location.key)
+
+#
+@tel Cargo Hold Aft
+
+#
+@py self.location.db.map_area = "ferry_below"; self.location.db.map_x = 0; self.location.db.map_y = -1; self.msg("Tagged: " + self.location.key)
+
+# -----------------------------------------------------------------------
 # Done
 # -----------------------------------------------------------------------
 

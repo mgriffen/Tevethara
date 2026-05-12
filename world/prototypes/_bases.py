@@ -29,6 +29,31 @@ WEAPON_BASE = {
     "locks": "get:all();drop:all()",
 }
 
+ARMOR_BASE = {
+    "prototype_key": "armor_base",
+    "typeclass": "typeclasses.items.Armor",
+    "prototype_desc": "Abstract armor parent.",
+    "prototype_tags": ["abstract", "armor"],
+    "tags": [("armor", "category")],
+    "attrs": [
+        ("armor_value", 0),
+        ("weight", 1.0),
+    ],
+    "locks": "get:all();drop:all()",
+}
+
+CONSUMABLE_BASE = {
+    "prototype_key": "consumable_base",
+    "typeclass": "typeclasses.items.Consumable",
+    "prototype_desc": "Abstract consumable parent.",
+    "prototype_tags": ["abstract", "consumable"],
+    "tags": [("consumable", "category")],
+    "attrs": [
+        ("weight", 0.1),
+    ],
+    "locks": "get:all();drop:all()",
+}
+
 TIER_STARTER = {
     "prototype_key": "tier_starter",
     "prototype_desc": "Abstract starter-tier parent.",

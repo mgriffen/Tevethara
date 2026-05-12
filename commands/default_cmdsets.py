@@ -19,6 +19,9 @@ from commands.command import CmdQuit
 from commands.moon import CmdMoon
 from commands.map_commands import CmdMapSet
 from commands.oasmc_intake import OASMCIntakeCmdSet
+from commands.use import CmdUse
+from commands.equip import CmdEquip, CmdUnequip, CmdEquipment
+from commands.talk import CmdTalk
 
 
 class CharacterCmdSet(default_cmds.CharacterCmdSet):
@@ -37,6 +40,11 @@ class CharacterCmdSet(default_cmds.CharacterCmdSet):
         super().at_cmdset_creation()
         self.add(CmdMoon())
         self.add(CmdMapSet())
+        self.add(CmdUse())
+        self.add(CmdEquip())
+        self.add(CmdUnequip())
+        self.add(CmdEquipment())
+        self.add(CmdTalk())
         self.add(OASMCIntakeCmdSet)
         #
         # any commands you add below will overload the default ones.

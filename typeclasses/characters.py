@@ -157,6 +157,76 @@ class Character(ObjectParent, DefaultCharacter):
         self.db.intake_complete = False
         # Intro cutscene tracking
         self.db.intro_seen = False
+        # Equipped slots: {slot_tag: item_obj}
+        self.db.equipped = {}
+
+    # ------------------------------------------------------------------
+    # Equipment
+    # ------------------------------------------------------------------
+
+    _WEAPON_SLOTS = ("main_hand", "off_hand", "ranged")
+
+    def equip(self, item):
+        """Equip an item from inventory into its slot. Auto-swaps if occupied."""
+        slot_tags = item.tags.get(category="slot", return_list=True) or []
+        if not slot_tags:
+            self.msg(f"The {item.key} can't be equipped.")
+            return False
+        slot = slot_tags[0]
+
+        equipped = self.db.equipped or {}
+        if equipped.get(slot) is item:
+            self.msg(f"You're already using the {item.key}.")
+            return False
+
+        current = equipped.get(slot)
+        if current:
+            verb = "stop wielding" if slot in self._WEAPON_SLOTS else "remove"
+            self.msg(f"You {verb} the {current.key}.")
+
+        equipped[slot] = item
+        self.db.equipped = equipped
+
+        if slot in self._WEAPON_SLOTS:
+            self.msg(f"You wield the {item.key}.")
+            if self.location:
+                self.location.msg_contents(
+                    f"{self.key} wields {item.key}.", exclude=[self]
+                )
+        else:
+            self.msg(f"You put on the {item.key}.")
+            if self.location:
+                self.location.msg_contents(
+                    f"{self.key} puts on {item.key}.", exclude=[self]
+                )
+        return True
+
+    def unequip(self, item):
+        """Remove an item from whatever slot it's in."""
+        equipped = self.db.equipped or {}
+        slot = next((s for s, i in equipped.items() if i is item), None)
+        if slot is None:
+            self.msg(f"You aren't using the {item.key}.")
+            return False
+        del equipped[slot]
+        self.db.equipped = equipped
+        verb = "stop wielding" if slot in self._WEAPON_SLOTS else "remove"
+        self.msg(f"You {verb} the {item.key}.")
+        if self.location:
+            self.location.msg_contents(
+                f"{self.key} removes {item.key}.", exclude=[self]
+            )
+        return True
+
+    def at_object_leave(self, moved_obj, target_location, **kwargs):
+        """Auto-unequip an item when it leaves the character's inventory."""
+        super().at_object_leave(moved_obj, target_location, **kwargs)
+        equipped = self.db.equipped or {}
+        for slot, item in list(equipped.items()):
+            if item is moved_obj:
+                del equipped[slot]
+                self.db.equipped = equipped
+                break
 
     def get_prompt(self):
         """Return the ASCII text prompt string showing current vitals."""
@@ -199,6 +269,31 @@ class Character(ObjectParent, DefaultCharacter):
             super().at_post_puppet(**kwargs)
         self.update_prompt()
         self.send_map()
+        self._maybe_trigger_attendant_greeting()
+
+    def _maybe_trigger_attendant_greeting(self):
+        """Fire the ferry attendant's wake-up line once."""
+        if self.db.attendant_greeted:
+            return
+        if not self.location or self.location.key != "Ferry Passenger Hold":
+            return
+        attendant = next(
+            (obj for obj in self.location.contents
+             if obj.is_typeclass("typeclasses.npcs.BoatAttendant", exact=False)),
+            None,
+        )
+        if not attendant:
+            return
+        from evennia.utils.utils import delay
+        char_ref = self
+        attendant_ref = attendant
+
+        def _fire():
+            if char_ref.location and attendant_ref.location == char_ref.location:
+                attendant_ref.at_talk(char_ref)
+                char_ref.db.attendant_greeted = True
+
+        delay(1.5, _fire)
 
     # ------------------------------------------------------------------
     # Intro cutscene
@@ -318,3 +413,4 @@ class Character(ObjectParent, DefaultCharacter):
                 )
             self.location.for_contents(_announce, exclude=[self], from_obj=self)
         self.update_prompt()
+        self._maybe_trigger_attendant_greeting()
