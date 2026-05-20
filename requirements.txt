@@ -15,7 +15,7 @@ django-sekizai==2.0.0
 djangorestframework==3.14.0
 evennia==5.0.1
 hyperlink==21.0.0
-idna==3.11
+idna==3.15
 incremental==24.11.0
 inflect==7.5.0
 isort==7.0.0
