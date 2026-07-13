@@ -8,7 +8,7 @@ cffi==2.0.0
 click==8.3.1
 constantly==23.10.4
 cryptography==46.0.7
-django==5.2.14
+django==5.2.15
 django-classy-tags==4.1.0
 django-filter==2.4.0
 django-sekizai==2.0.0
