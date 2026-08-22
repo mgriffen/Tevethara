@@ -218,9 +218,9 @@ class Character(ObjectParent, DefaultCharacter):
             )
         return True
 
-    def at_object_leave(self, moved_obj, target_location, **kwargs):
+    def at_object_leave(self, moved_obj, target_location, move_type="move", **kwargs):
         """Auto-unequip an item when it leaves the character's inventory."""
-        super().at_object_leave(moved_obj, target_location, **kwargs)
+        super().at_object_leave(moved_obj, target_location, move_type=move_type, **kwargs)
         equipped = self.db.equipped or {}
         for slot, item in list(equipped.items()):
             if item is moved_obj:
