@@ -64,3 +64,27 @@ TIER_STARTER = {
         ("value", 3),
     ],
 }
+
+DUMMY_BASE = {
+    "prototype_key": "dummy_base",
+    "typeclass": "typeclasses.arena.TrainingDummy",
+    "prototype_desc": "Abstract training-dummy parent.",
+    "prototype_tags": ["abstract", "dummy"],
+    "tags": [("training_dummy", "category")],
+    "attrs": [
+        # Combat Core reads these. Nothing does yet — the engine is project B.
+        ("hp_max", 200),
+        ("armor_value", 0),
+        ("evasion", 0),
+        ("magic_resist", 0),
+        # Per-type resists per Damage Types. Transcendent is deliberately
+        # absent — it cannot be resisted.
+        ("resists", {
+            "crushing": 0, "piercing": 0, "slashing": 0, "unarmed": 0,
+            "fire": 0, "frost": 0, "lightning": 0, "acid": 0, "poison": 0,
+            "holy": 0, "unholy": 0, "celestium": 0,
+        }),
+        ("asset_tag", ""),
+    ],
+    "locks": "get:false();drop:false()",
+}

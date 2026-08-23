@@ -1,0 +1,455 @@
+#
+# Practical Assessment Annex — the OASMC Academy combat arena.
+#
+# 11 rooms one stair below the Sanction Hall, map_area "annex".
+# Built as the test harness for Combat Core; there is no combat engine yet,
+# so nothing here has combat behaviour. The assessment posts carry the stat
+# attributes the engine will read and nothing consumes them.
+#
+# Load with: @batchprocess world.arena
+#
+# This file is deliberately SEPARATE from world.batch_cmds, which opens with
+# a destructive cleanup step and re-digs the 25 OASMC rooms. This one can be
+# re-run while iterating without dragging that along. It is NOT idempotent
+# on its own either — re-running it digs a second set of rooms. Delete the
+# annex rooms first if you rebuild.
+#
+# Requires: world.batch_cmds to have been run (Sanction Hall must exist).
+#
+
+#
+# ------------------------------------------------------------------
+# ROOMS — dug from the Sanction Hall down
+# ------------------------------------------------------------------
+#
+
+@tel Sanction Hall
+
+#
+@dig/teleport Annex Vestibule = down;d, up;u
+
+#
+@dig Requisition and Returns = west;w, east;e
+
+#
+@dig Assessment Records Office = east;e, west;w
+
+#
+@dig Practical Assessment Floor = north;n, south;s
+
+#
+@tel Practical Assessment Floor
+
+#
+@dig Ranged Discharge Gallery = west;w, east;e
+
+#
+@dig Applied Technique Hall = east;e, west;w
+
+#
+@dig Cadence Corridor = north;n, south;s
+
+#
+@tel Cadence Corridor
+
+#
+@dig Evocation Cell = west;w, east;e
+
+#
+@dig Adverse Conditions Suite = east;e, west;w
+
+#
+@dig Concurrent Engagement Pit = north;n, south;s
+
+#
+@tel Concurrent Engagement Pit
+
+#
+@dig Observation Gallery = north;n, south;s
+
+#
+# ------------------------------------------------------------------
+# DESCRIPTIONS
+# ------------------------------------------------------------------
+#
+
+#
+# 1. Annex Vestibule (0,0) — entry, sign-in, waiver
+#
+@tel Annex Vestibule
+
+#
+@desc Annex Vestibule =
+The stair comes down into a low room with a stone floor worn into a shallow channel between the bottom step and the sign-in desk. The desk is unstaffed. A ledger lies open on it, a pen chained to the leg, and a wooden tray holding forms in three stacks — one nearly gone, one untouched, one filled in and never collected.
+
+A framed notice hangs where anyone coming down the stair will read it before they reach the bottom:
+
+  |y"NO PRACTICAL ASSESSMENT MAY BE ATTEMPTED WITHOUT A COUNTERSIGNED WAIVER ON FILE. — §14, Applied Sorcery Practicum Standards"|n
+
+Passages lead |wwest|n to Requisition and |weast|n to the Records Office. The assessment floor is |wnorth|n. The stair leads back |wup|n to the Sanction Hall.
+
+#
+# 2. Requisition and Returns (-1,0) — equip / unequip / use, consumables
+#
+@tel Requisition and Returns
+
+#
+@desc Requisition and Returns =
+A long counter divides the room, with a shutter above it that can be dropped and locked. Behind the counter: racks of blunted practice weapons, a shelf of banded practice shields, and a crate of field bandages with a card on it reading |yTAKE TWO. RETURN WHAT YOU DO NOT USE.|n
+
+Nothing is issued here without a line in the ledger. The ledger goes back further than the racks do.
+
+A notice on the shutter reads:
+
+  |y"EQUIPMENT ISSUED FOR ASSESSMENT REMAINS OFFICE PROPERTY. LOSSES ARE DEDUCTED. — §9, Applied Sorcery Practicum Standards"|n
+
+The vestibule is |weast|n.
+
+#
+# 3. Assessment Records Office (1,0) — framing, instrumentation, lore
+#
+@tel Assessment Records Office
+
+#
+@desc Assessment Records Office =
+Shelves to the ceiling, all of them full, none of them labelled in a way that helps. Every practical assessment run in this annex since the annex was cut into the rock has a file here: the result, the instructor, the equipment issued, the equipment returned, and the condition of the fixtures afterward.
+
+A clerk's desk sits under the one lamp. The chair is pushed in. The in-tray is empty and the out-tray is not.
+
+A suggestion box is fixed to the wall beside the door, at a height that suggests it was mounted by someone considerably taller than most students.
+
+The vestibule is |wwest|n.
+
+#
+# 4. Practical Assessment Floor (0,1) — melee, swing timer, armour reduction
+#
+@tel Practical Assessment Floor
+
+#
+@desc Practical Assessment Floor =
+The floor is packed earth, raked flat, ringed by a low kerb of set stone. Sand has been scattered where the earth was raked too often and stopped holding. Assessment posts stand at intervals down the length of it, each on its own square of harder ground.
+
+Lines are scored into the earth at one, two and three paces from each post. Only the line at one pace is worn.
+
+An instructor's slate hangs by the door, wiped clean. Beside it:
+
+  |y"CONTACT ASSESSMENT ONLY. DISCHARGE AND EVOCATION HAVE THEIR OWN ROOMS. — §22, Applied Sorcery Practicum Standards"|n
+
+The discharge gallery is |wwest|n and the technique hall |weast|n. The corridor runs |wnorth|n; the vestibule is back |wsouth|n.
+
+#
+# 5. Ranged Discharge Gallery (-1,1) — opening-shot window, sightlines
+#
+@tel Ranged Discharge Gallery
+
+#
+@desc Ranged Discharge Gallery =
+A long room, far longer than it is wide, cut straight back into the rock. The far end is a wall of packed earth behind a screen of hanging rope mat, and both have been replaced enough times that the ledger in Requisition carries a standing line for it.
+
+Distance is marked on the floor in painted numerals, five to fifty. The numerals past twenty are still crisp.
+
+The firing line is a strip of board set flush into the stone. It is the only part of this floor that has ever been resurfaced.
+
+  |y"DISCHARGE DOWNRANGE ONLY. — §31, Applied Sorcery Practicum Standards"|n
+
+The assessment floor is |weast|n.
+
+#
+# 6. Applied Technique Hall (1,1) — GCD, per-ability cooldowns, stamina
+#
+@tel Applied Technique Hall
+
+#
+@desc Applied Technique Hall =
+A square hall with a high ceiling and nothing in it but space and a water barrel. The walls are lined to shoulder height with boards, replaced in patches, and the patches replaced in patches.
+
+A single post stands at the centre, strapped into the floor rather than set on it. Nothing about it is subtle. It is built to be hit hard and repeatedly by people finding out how often they are able to.
+
+A brass tally counter is mounted on the wall at eye height, the kind turned by hand. It reads 4.
+
+  |y"ONE CANDIDATE ON THE FLOOR AT A TIME. — §22, Applied Sorcery Practicum Standards"|n
+
+The assessment floor is |wwest|n.
+
+#
+# 7. Cadence Corridor (0,2) — movement, flee, exit topology, map render
+#
+@tel Cadence Corridor
+
+#
+@desc Cadence Corridor =
+A corridor with doorways off both sides and another at the far end, built wide enough that two people can pass at speed without touching. The floor is stone, dry, and swept.
+
+Instructors use this stretch to assess disengagement: whether a candidate can leave a room they are losing, and whether they can find the door with something behind them. The doorways are unmarked on purpose. A plan of the annex is mounted on the wall, and it is the only one in the building.
+
+  |y"CANDIDATES ARE ASSESSED ON EXIT AS WELL AS ON ENGAGEMENT. — §17, Applied Sorcery Practicum Standards"|n
+
+The evocation cell is |wwest|n and the conditions suite |weast|n. The pit is |wnorth|n; the assessment floor is back |wsouth|n.
+
+#
+# 8. Evocation Cell (-1,2) — mana economy, cast time, interrupts
+#
+@tel Evocation Cell
+
+#
+@desc Evocation Cell =
+A small round chamber, lined entirely — floor, walls, ceiling — in ward-line: fine channels cut into the stone and filled with a grey alloy that does not take a polish. The lines close on themselves. There are no corners anywhere in the room.
+
+A single warded target post stands at the focus. Everything cast in here is meant to stop at the walls, and by every measure the Office has taken, everything does.
+
+The air is dry in a way that becomes noticeable within a few breaths.
+
+  |y"SUSTAINED CHANNELLING IS PERMITTED IN THIS CELL UNDER SUPERVISION ONLY. — §29, Applied Sorcery Practicum Standards"|n
+
+The corridor is |weast|n.
+
+#
+# 9. Adverse Conditions Suite (1,2) — the hard-stop statuses and DoTs
+#
+@tel Adverse Conditions Suite
+
+#
+@desc Adverse Conditions Suite =
+A bare room with a bench along one wall and a rail bolted at waist height around the other three. The rail is worn smooth along its whole length.
+
+Candidates are brought here to be blinded, silenced, bound, disarmed and put on the floor — under supervision, on a schedule — so that the first time it happens to them it is not the first time. The equipment is on the bench, laid out in the order it is used.
+
+There is no instrumentation in this room and no observation window. What is assessed here is not performance.
+
+Nobody has written anything on the walls.
+
+The corridor is |wwest|n.
+
+#
+# 10. Concurrent Engagement Pit (0,3) — threat table, multi-mob, AOE
+#
+@tel Concurrent Engagement Pit
+
+#
+@desc Concurrent Engagement Pit =
+The floor drops eight feet. A rail runs the perimeter at the upper level; the way down is a short ladder in the corner, and it is the only way down.
+
+Three posts stand in the pit, spaced so that a candidate cannot face all three at once. They were requisitioned together and are numbered in sequence, which makes this the only room in the annex where anyone can tell the posts apart.
+
+The earth at the bottom is churned in a wide ring near the wall and smooth in the centre.
+
+  |y"CANDIDATES ARE NOT TO BE LEFT IN THE PIT UNOBSERVED. — §24, Applied Sorcery Practicum Standards"|n
+
+The corridor is |wsouth|n. The observation gallery is |wnorth|n.
+
+#
+# 11. Observation Gallery (0,4) — instructor vantage, readouts
+#
+@tel Observation Gallery
+
+#
+@desc Observation Gallery =
+A narrow room at rim level, with a window of thick glass looking back down the length of the pit and a bank of slates ruled up beneath it. The slates are written during an assessment, copied into the Records Office afterward, and wiped.
+
+Two chairs. One is worn through on the arms and the other is not.
+
+A speaking tube runs from the wall down into the pit. There is no tube running the other way.
+
+The pit is |wsouth|n.
+
+#
+# ------------------------------------------------------------------
+# TYPECLASSES — the annex rooms are Tevethara Rooms, not DefaultRooms
+# ------------------------------------------------------------------
+#
+
+@tel Annex Vestibule
+
+#
+@py
+from evennia import search_object
+ANNEX_ROOMS = [
+    "Annex Vestibule", "Requisition and Returns", "Assessment Records Office",
+    "Practical Assessment Floor", "Ranged Discharge Gallery",
+    "Applied Technique Hall", "Cadence Corridor", "Evocation Cell",
+    "Adverse Conditions Suite", "Concurrent Engagement Pit",
+    "Observation Gallery",
+]
+for name in ANNEX_ROOMS:
+    for obj in search_object(name):
+        obj.swap_typeclass("typeclasses.rooms.Room")
+self.msg(f"Annex: {len(ANNEX_ROOMS)} rooms set to typeclasses.rooms.Room")
+
+#
+# ------------------------------------------------------------------
+# MAP COORDINATES — map_area "annex", rendered separately from "oasmc"
+#
+# The annex tags itself here rather than in world/map_setup.ev so that one
+# batchprocess run produces a walkable, mapped area.
+# ------------------------------------------------------------------
+#
+
+@py
+from evennia import search_object
+COORDS = {
+    "Annex Vestibule": (0, 0),
+    "Requisition and Returns": (-1, 0),
+    "Assessment Records Office": (1, 0),
+    "Practical Assessment Floor": (0, 1),
+    "Ranged Discharge Gallery": (-1, 1),
+    "Applied Technique Hall": (1, 1),
+    "Cadence Corridor": (0, 2),
+    "Evocation Cell": (-1, 2),
+    "Adverse Conditions Suite": (1, 2),
+    "Concurrent Engagement Pit": (0, 3),
+    "Observation Gallery": (0, 4),
+}
+tagged = 0
+for name, (x, y) in COORDS.items():
+    for room in search_object(name, typeclass="typeclasses.rooms.Room"):
+        room.db.map_area = "annex"
+        room.db.map_x = x
+        room.db.map_y = y
+        tagged += 1
+self.msg(f"Annex: tagged {tagged} rooms into map_area 'annex'")
+
+#
+# ------------------------------------------------------------------
+# ACCESS — the stair down from the Sanction Hall is authorisation-gated
+#
+# `practicum_authorized` is not set by anything yet. That is deliberate:
+# nothing in the intake flow grants it, so a new character walking intake
+# cannot wander in. Builders and superusers pass.
+# ------------------------------------------------------------------
+#
+
+@py
+from evennia import search_object
+ERR = (
+    "The stair down is barred at the first landing by a gate of plain iron. A "
+    "card is slotted into the frame at eye height.\n"
+    "\n"
+    "  |y\"THE ANNEX IS ENTERED ON COUNTERSIGNED AUTHORISATION ONLY. APPLY AT "
+    "THIS HALL. — \u00a72, Applied Sorcery Practicum Standards\"|n\n"
+    "\n"
+    "Below the card, in a different hand, someone has written the current "
+    "waiting time and then crossed it out."
+)
+for room in search_object("Sanction Hall", typeclass="typeclasses.rooms.Room"):
+    for ex in room.exits:
+        if ex.key.lower() == "down" and ex.destination and ex.destination.key == "Annex Vestibule":
+            ex.locks.add("traverse:perm(Builder) or attr(practicum_authorized)")
+            ex.db.err_traverse = ERR
+            self.msg(f"Annex: gated {ex.key} from {room.key}")
+
+#
+# ------------------------------------------------------------------
+# FIXTURES
+# ------------------------------------------------------------------
+#
+
+@tel Annex Vestibule
+
+#
+@spawn annex_waiver
+
+#
+@spawn annex_signin_ledger
+
+#
+@tel Requisition and Returns
+
+#
+@spawn requisition_ledger
+
+#
+@spawn practice_rack
+
+#
+@tel Assessment Records Office
+
+#
+@spawn depreciation_file
+
+#
+@spawn suggestion_box
+
+#
+@tel Practical Assessment Floor
+
+#
+@spawn dummy_floor_plain
+
+#
+@spawn dummy_floor_armored
+
+#
+@spawn bartholomew
+
+#
+@tel Ranged Discharge Gallery
+
+#
+@spawn dummy_range_static
+
+#
+@spawn dummy_range_swinging
+
+#
+@spawn range_backstop
+
+#
+@tel Applied Technique Hall
+
+#
+@spawn dummy_technique
+
+#
+@tel Cadence Corridor
+
+#
+@spawn annex_plan
+
+#
+@tel Evocation Cell
+
+#
+@spawn ward_target
+
+#
+@spawn ward_hairline
+
+#
+@spawn ward_survey_plates
+
+#
+@tel Adverse Conditions Suite
+
+#
+@spawn condition_kit
+
+#
+@tel Concurrent Engagement Pit
+
+#
+@spawn dummy_pit_a
+
+#
+@spawn dummy_pit_b
+
+#
+@spawn dummy_pit_c
+
+#
+@tel Observation Gallery
+
+#
+@spawn assessment_slate
+
+#
+# ------------------------------------------------------------------
+# Done
+# ------------------------------------------------------------------
+#
+
+@tel Annex Vestibule
+
+#
+@py self.msg("=== Practical Assessment Annex build complete. ===")
+
+#

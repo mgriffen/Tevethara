@@ -212,3 +212,11 @@
 
 #
 @py self.msg("=== Map coordinate setup complete. ===")
+
+# -----------------------------------------------------------------------
+# PRACTICAL ASSESSMENT ANNEX — tagged by world/arena.ev, not here
+#
+# The annex (map_area "annex", 11 rooms) tags its own coordinates at the
+# end of world/arena.ev, so that one batchprocess run of that file produces
+# a walkable and mapped area. Do not duplicate those tags here.
+# -----------------------------------------------------------------------

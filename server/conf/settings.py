@@ -46,6 +46,7 @@ PROTOTYPE_MODULES = [
     "world.prototypes.starter_consumables",
     "world.prototypes.oasmc",
     "world.prototypes.ferry",
+    "world.prototypes.arena",
 ]
 
 
