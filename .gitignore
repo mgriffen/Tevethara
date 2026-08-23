@@ -36,3 +36,6 @@ Zone.Identifier
 
 # Databases
 *.db3
+
+# server runtime pidfiles
+server/*.pid
