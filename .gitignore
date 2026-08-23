@@ -4,6 +4,7 @@ __pycache__/
 
 # Evennia runtime (don't version these)
 server/logs/
+server/*.pid
 server/db/
 server/.cache/
 server/conf/secret_settings.py
