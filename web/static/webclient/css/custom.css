@@ -8,9 +8,16 @@
   /* ⚠️ Every family here must carry the full U+2500 box-drawing block itself.
      If the chosen face lacks it the browser substitutes those glyphs from a
      DIFFERENT font at a different advance width, and the room header, the
-     connection screen and the ASCII map all shear apart. Do not add a family
-     without checking. `ui-monospace` in particular is unsafe — on some Linux
-     fontconfig setups it resolves to a proportional face. */
+     connection screen and the ASCII map all shear apart.
+
+     Measured at 16px on Gaming, 2026-08-23 (render a 20-char run and divide;
+     one glyph rounds too coarsely to show the mismatch):
+         ui-monospace, ...            A 10.000px   ═ ║ ╔ 9.602px   SHEARED
+         "Liberation Mono", monospace A  9.602px   ═ ║ ╔ 9.602px   ok
+     `fc-match ui-monospace` returns DejaVuSans.ttf — the PROPORTIONAL face.
+     That generic keyword looks like the modern choice and is the one that
+     breaks; it is excluded by name deliberately. Do not add a family without
+     measuring it. Background: [[Webclient Text Rendering]] in the vault. */
   --tev-mono: Consolas, "Liberation Mono", "DejaVu Sans Mono", monospace;
 }
 
