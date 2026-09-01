@@ -12,7 +12,7 @@ django==6.0.8
 django-classy-tags==4.1.0
 django-filter==25.2
 django-sekizai==2.0.0
-djangorestframework==3.16.1
+djangorestframework==3.17.2
 evennia==6.1.0
 hyperlink==21.0.0
 idna==3.19
